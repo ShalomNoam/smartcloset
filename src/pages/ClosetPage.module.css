@@ -1,0 +1,293 @@
+.page {
+  padding: var(--space-lg) var(--space-md);
+  padding-bottom: calc(var(--nav-height) + var(--space-lg));
+  animation: fadeSlideUp 0.3s ease;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+}
+
+.title { font-size: 24px; font-weight: 700; }
+
+.countBadge {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  padding: 4px 12px;
+  border-radius: var(--radius-chip);
+}
+
+/* Search */
+.searchWrap {
+  position: relative;
+  margin-bottom: var(--space-md);
+}
+
+.searchIcon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-secondary);
+  pointer-events: none;
+}
+
+.search {
+  width: 100%;
+  padding: 12px 40px 12px 42px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-button);
+  background: var(--color-card);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  transition: var(--transition);
+  outline: none;
+}
+
+.search::placeholder { color: var(--color-text-secondary); }
+
+.search:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.clearBtn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-border);
+  color: var(--color-text-secondary);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.clearBtn:hover {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+/* Filters */
+.filters { margin-bottom: var(--space-lg); }
+
+/* Grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
+}
+
+.cardWrap { animation: fadeSlideUp 0.35s ease both; }
+
+.skeletonCard { height: 160px; }
+
+/* Add card */
+.addCard {
+  background: var(--color-card);
+  border-radius: var(--radius-card);
+  border: 2px dashed var(--color-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  min-height: 160px;
+}
+
+.addCard:hover {
+  background: var(--color-primary-light);
+  transform: translateY(-2px);
+}
+
+.addIcon { color: var(--color-primary); }
+
+.addLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+/* Empty */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-xl) var(--space-md);
+  gap: var(--space-sm);
+  animation: fadeIn 0.3s ease;
+}
+
+.emptyIconWrap {
+  width: 80px;
+  height: 80px;
+  background: var(--color-primary-light);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-sm);
+  animation: float 3s ease-in-out infinite;
+}
+
+.emptyIcon { color: var(--color-primary); }
+
+.emptyTitle {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  color: var(--color-text-primary);
+}
+
+.emptyDesc {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  max-width: 240px;
+  line-height: 1.5;
+}
+
+.emptyBtn {
+  margin-top: var(--space-md);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: var(--color-primary);
+  color: var(--color-card);
+  padding: 12px 24px;
+  border-radius: var(--radius-button);
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--shadow-btn);
+}
+
+.emptyBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(255, 107, 157, 0.45);
+}
+
+/* Modal */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 26, 46, 0.45);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+  padding-bottom: var(--nav-height);
+}
+
+.modal {
+  background: var(--color-card);
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  padding: var(--space-lg);
+  width: 100%;
+  max-width: 430px;
+  animation: slideUp 0.3s ease;
+  position: relative;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+.modalClose {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.modalClose:hover { background: var(--color-primary-light); }
+
+.closeIcon { color: var(--color-text-secondary); }
+.modalClose:hover .closeIcon { color: var(--color-primary); }
+
+.modalIconWrap {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-accent-light));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-md);
+}
+
+.modalIcon { color: var(--color-primary); }
+
+.modalName {
+  font-size: 22px;
+  text-align: center;
+  margin-bottom: var(--space-lg);
+}
+
+.modalMeta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.metaBox {
+  background: var(--color-background);
+  border-radius: var(--radius-input);
+  padding: var(--space-sm) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metaLabel {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.metaValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.modalSeasons { display: flex; flex-direction: column; gap: var(--space-sm); }
+
+.seasonRow { display: flex; gap: var(--space-sm); flex-wrap: wrap; }
+
+.seasonChip {
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: var(--radius-chip);
+}

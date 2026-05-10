@@ -1,0 +1,80 @@
+.card {
+  background: var(--color-card);
+  border-radius: var(--radius-card);
+  border: 1.5px solid var(--color-border);
+  padding: var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  box-shadow: var(--shadow-card);
+  transition: var(--transition);
+  animation: fadeSlideUp 0.35s ease both;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-hover);
+  border-color: var(--color-primary-light);
+  transform: translateY(-2px);
+}
+
+.icons {
+  display: flex;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+}
+
+.iconCircle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.card:hover .iconCircle {
+  background: var(--color-accent-light);
+}
+
+.icon {
+  color: var(--color-primary);
+  transition: var(--transition);
+}
+
+.card:hover .icon {
+  color: var(--color-accent);
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tags {
+  display: flex;
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  padding: 2px 8px;
+  border-radius: var(--radius-chip);
+}

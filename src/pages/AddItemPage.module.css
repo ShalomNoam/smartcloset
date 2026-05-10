@@ -1,0 +1,202 @@
+.page {
+  padding: var(--space-lg) var(--space-md);
+  padding-bottom: calc(var(--nav-height) + var(--space-xl));
+  animation: fadeSlideUp 0.3s ease;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+}
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  padding: 0;
+}
+
+.backBtn:hover { color: var(--color-primary-hover); }
+.backIcon { color: var(--color-primary); }
+
+.title { font-size: 18px; font-weight: 600; }
+
+/* Photo */
+.photoArea {
+  border: 2px dashed var(--color-primary);
+  border-radius: var(--radius-card);
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  background: var(--color-card);
+  overflow: hidden;
+  margin-bottom: var(--space-lg);
+  outline: none;
+}
+
+.photoArea:hover  { background: var(--color-primary-light); }
+.photoArea:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+.hasPhoto { border-style: solid; }
+
+.photoPreview {
+  width: 100%;
+  min-height: 180px;
+  object-fit: cover;
+}
+
+.photoPlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-lg);
+  text-align: center;
+}
+
+.cameraIcon { color: var(--color-primary); }
+
+.photoTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.photoSub {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.fileInput { display: none; }
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.field { display: flex; flex-direction: column; gap: var(--space-sm); }
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-accent);
+  letter-spacing: 0.2px;
+}
+
+.input {
+  padding: 13px var(--space-md);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-input);
+  background: var(--color-card);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  transition: var(--transition);
+  outline: none;
+  width: 100%;
+}
+
+.input::placeholder { color: var(--color-text-secondary); }
+
+.input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.inputError {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.12);
+}
+
+.errorMsg {
+  font-size: 12px;
+  color: var(--color-error);
+  font-weight: 500;
+}
+
+/* Select */
+.selectWrap { position: relative; }
+
+.select {
+  width: 100%;
+  padding: 13px var(--space-md);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-input);
+  background: var(--color-card);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  transition: var(--transition);
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+
+.select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+/* Color input with icon */
+.colorWrap { position: relative; }
+
+.paletteIcon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-secondary);
+  pointer-events: none;
+}
+
+.colorInput { padding-left: 40px; }
+
+/* Season chips — active = solid accent (purple per spec) */
+.seasonRow { display: flex; gap: var(--space-sm); flex-wrap: wrap; }
+
+.seasonChip {
+  padding: 8px 18px;
+  border-radius: var(--radius-chip);
+  border: 1.5px solid var(--color-border);
+  background: var(--color-card);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-body);
+}
+
+.seasonChip:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: var(--color-accent-light);
+}
+
+.seasonActive {
+  background: var(--color-accent);
+  color: var(--color-card);
+  border-color: var(--color-accent);
+}
+
+.seasonActive:hover {
+  background: var(--color-accent-dark);
+  color: var(--color-card);
+}
+
+/* Actions */
+.actions { display: flex; flex-direction: column; gap: var(--space-sm); }

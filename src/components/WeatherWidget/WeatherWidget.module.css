@@ -1,0 +1,78 @@
+.widget {
+  background: linear-gradient(135deg, var(--color-warm-light) 0%, var(--color-primary-light) 100%);
+  border-radius: var(--radius-card);
+  padding: var(--space-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative circle */
+.widget::after {
+  content: '';
+  position: absolute;
+  top: -24px;
+  right: -24px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: rgba(255, 107, 157, 0.07);
+  pointer-events: none;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.sunWrap {
+  animation: float 3s ease-in-out infinite;
+}
+
+.sun {
+  color: var(--color-primary);
+}
+
+.temp {
+  font-family: var(--font-heading);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+
+.desc {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-top: 3px;
+  font-weight: 400;
+}
+
+.right {
+  text-align: right;
+}
+
+.badge {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-accent);
+  background: var(--color-accent-light);
+  padding: 2px 10px;
+  border-radius: var(--radius-chip);
+  display: inline-block;
+  margin-bottom: var(--space-xs);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.suggestion {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
