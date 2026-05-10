@@ -1,38 +1,61 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
+/* ─────────────────────────────────────────
+   DESIGN TOKENS  (single source of truth)
+───────────────────────────────────────── */
 :root {
-  /* ── Spec-required color tokens ── */
+  /* Core palette */
   --color-primary:        #FF6B9D;
   --color-primary-light:  #FFE4F0;
+  --color-primary-hover:  #ff5592;
   --color-accent:         #7C5CBF;
   --color-accent-light:   #F5F0FF;
+  --color-accent-dark:    #6b4dab;
+
+  /* Surface */
   --color-background:     #FAFAFA;
   --color-card:           #FFFFFF;
+
+  /* Text */
   --color-text-primary:   #1A1A2E;
   --color-text-secondary: #888888;
-  --color-border:         #F0E0F5;
-  --color-success:        #4CAF50;
-  --color-error:          #FF4444;
 
-  /* ── Extended tokens (no hardcoding elsewhere) ── */
-  --color-warm-light:     #FFF8E7;   /* weather widget gradient start */
-  --color-primary-hover:  #ff5592;   /* darker primary for hover */
-  --color-accent-dark:    #6b4dab;   /* darker accent for hover */
+  /* Status */
+  --color-success:        #4CAF50;
+  --color-success-light:  #E8F5E9;
+  --color-error:          #FF4444;
+  --color-border:         #F0E0F5;
+
+  /* Category badge colors */
+  --color-cat-tops:             var(--color-primary);
+  --color-cat-tops-light:       var(--color-primary-light);
+  --color-cat-bottoms:          var(--color-accent);
+  --color-cat-bottoms-light:    var(--color-accent-light);
+  --color-cat-shoes:            #4CAF50;
+  --color-cat-shoes-light:      #E8F5E9;
+  --color-cat-outer:            #FF8C42;
+  --color-cat-outer-light:      #FFF3E8;
+  --color-cat-accessories:      #00BCD4;
+  --color-cat-accessories-light: #E0F7FA;
+
+  /* Extended */
+  --color-warm-light:    #FFF8E7;
 
   /* ── Typography ── */
-  --font-heading: Georgia, serif;
-  --font-body:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body:    'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 
-  /* ── Border Radius ── */
+  /* ── Radius ── */
   --radius-card:   16px;
   --radius-button: 24px;
   --radius-chip:   20px;
   --radius-input:  12px;
 
   /* ── Shadows ── */
-  --shadow-card: 0 2px 12px rgba(255, 107, 157, 0.08);
-  --shadow-hover: 0 6px 24px rgba(255, 107, 157, 0.16);
+  --shadow-card:  0 2px 12px rgba(255, 107, 157, 0.08);
+  --shadow-hover: 0 8px 32px rgba(255, 107, 157, 0.18);
   --shadow-btn:   0 4px 16px rgba(255, 107, 157, 0.35);
+  --shadow-nav:   0 2px 20px rgba(26, 26, 46, 0.06);
 
   /* ── Spacing ── */
   --space-xs: 4px;
@@ -40,19 +63,18 @@
   --space-md: 16px;
   --space-lg: 24px;
   --space-xl: 32px;
+  --space-2xl: 48px;
 
   /* ── Misc ── */
-  --transition:  all 0.2s ease;
-  --nav-height:  72px;
+  --transition:    all 0.2s ease;
+  --nav-height:    72px;
+  --topnav-height: 64px;
 }
 
-/* ── Reset ── */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
+/* ─────────────────────────────────────────
+   RESET
+───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
 
 body {
@@ -69,6 +91,7 @@ body {
   min-height: 100vh;
 }
 
+/* Mobile shell — 430px pill */
 .app-wrapper {
   width: 100%;
   max-width: 430px;
@@ -79,69 +102,66 @@ body {
   box-shadow: 0 0 60px rgba(0, 0, 0, 0.12);
 }
 
-h1, h2, h3, h4, h5 {
-  font-family: var(--font-heading);
-  color: var(--color-text-primary);
+/* Tablet+ — full width */
+@media (min-width: 768px) {
+  #root { background: var(--color-background); }
+  .app-wrapper { max-width: 100%; box-shadow: none; overflow: visible; }
 }
 
-button {
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-family: var(--font-body);
-  transition: var(--transition);
-}
-
+h1, h2, h3, h4, h5 { font-family: var(--font-heading); color: var(--color-text-primary); }
+button { cursor: pointer; border: none; background: none; font-family: var(--font-body); transition: var(--transition); }
 a { text-decoration: none; color: inherit; }
-
 input, select, textarea { font-family: var(--font-body); }
 
-/* ── Keyframe library ── */
-
+/* ─────────────────────────────────────────
+   KEYFRAMES
+───────────────────────────────────────── */
 @keyframes fadeSlideUp {
   from { opacity: 0; transform: translateY(18px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-
 @keyframes shimmer {
   0%   { background-position: -400px 0; }
   100% { background-position:  400px 0; }
 }
-
 @keyframes heartPop {
   0%   { transform: scale(1);    }
   40%  { transform: scale(1.35); }
   70%  { transform: scale(0.9);  }
   100% { transform: scale(1);    }
 }
-
 @keyframes float {
-  0%, 100% { transform: translateY(0);   }
-  50%       { transform: translateY(-5px); }
+  0%, 100% { transform: translateY(0);    }
+  50%       { transform: translateY(-6px); }
 }
-
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+@keyframes sunPulse {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50%       { transform: scale(1.08) rotate(12deg); }
+}
 
-/* ── Skeleton ── */
-
+/* ─────────────────────────────────────────
+   SKELETON
+───────────────────────────────────────── */
 .skeleton {
   background: linear-gradient(
     90deg,
-    var(--color-border)       0%,
+    var(--color-border)        0%,
     var(--color-primary-light) 50%,
-    var(--color-border)       100%
+    var(--color-border)        100%
   );
   background-size: 400px 100%;
   animation: shimmer 1.4s ease-in-out infinite;
   border-radius: var(--radius-card);
 }
 
-/* ── Scrollbar ── */
+/* ─────────────────────────────────────────
+   SCROLLBAR
+───────────────────────────────────────── */
 ::-webkit-scrollbar { width: 0; height: 0; }

@@ -31,7 +31,7 @@
 }
 
 .primary:active:not(:disabled) {
-  transform: translateY(0);
+  transform: scale(0.97);
   box-shadow: var(--shadow-btn);
 }
 
@@ -43,9 +43,8 @@
   box-shadow: none;
 }
 
-.ghost:hover:not(:disabled) {
-  background: var(--color-accent-light);
-}
+.ghost:hover:not(:disabled) { background: var(--color-accent-light); }
+.ghost:active:not(:disabled) { transform: scale(0.97); }
 
 /* Disabled */
 .disabled {

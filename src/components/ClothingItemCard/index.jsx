@@ -9,8 +9,18 @@ const CATEGORY_ICON = {
   Accessories: Gem,
 }
 
+// Maps category → CSS module class for the badge color
+const CATEGORY_TAG_CLASS = {
+  Tops:        'tagTops',
+  Bottoms:     'tagBottoms',
+  Shoes:       'tagShoes',
+  Outer:       'tagOuter',
+  Accessories: 'tagAccessories',
+}
+
 export default function ClothingItemCard({ item, onClick }) {
-  const Icon = CATEGORY_ICON[item.category] ?? Shirt
+  const Icon     = CATEGORY_ICON[item.category] ?? Shirt
+  const tagClass = CATEGORY_TAG_CLASS[item.category] ?? 'tagTops'
 
   return (
     <div
@@ -24,7 +34,7 @@ export default function ClothingItemCard({ item, onClick }) {
         <Icon size={28} strokeWidth={1.5} className={styles.icon} />
       </div>
       <p className={styles.name}>{item.name}</p>
-      <span className={styles.tag}>{item.category}</span>
+      <span className={`${styles.tag} ${styles[tagClass]}`}>{item.category}</span>
     </div>
   )
 }

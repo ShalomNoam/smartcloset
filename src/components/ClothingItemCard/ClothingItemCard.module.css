@@ -16,20 +16,31 @@
   outline: none;
 }
 
+/* Gradient shimmer overlay on hover */
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
 .card:hover {
   box-shadow: var(--shadow-hover);
-  transform: translateY(-3px);
+  transform: translateY(-4px);
   border-color: var(--color-primary-light);
 }
+
+.card:hover::before { opacity: 1; }
 
 .card:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
-.card:active {
-  transform: translateY(-1px);
-}
+.card:active { transform: translateY(-2px) scale(0.98); }
 
 .iconWrap {
   width: 64px;
@@ -39,25 +50,38 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: var(--transition);
+  position: relative;
+  z-index: 1;
 }
 
-.icon {
-  color: var(--color-primary);
-}
+.card:hover .iconWrap { transform: scale(1.06); }
+
+.icon { color: var(--color-primary); }
 
 .name {
   font-size: 13px;
   font-weight: 600;
   color: var(--color-text-primary);
   line-height: 1.3;
+  position: relative;
+  z-index: 1;
 }
 
+/* Category badge — base */
 .tag {
   font-size: 10px;
-  font-weight: 500;
-  color: var(--color-accent);
-  background: var(--color-accent-light);
-  padding: 3px 10px;
+  font-weight: 600;
+  padding: 3px 12px;
   border-radius: var(--radius-chip);
   letter-spacing: 0.3px;
+  position: relative;
+  z-index: 1;
 }
+
+/* Per-category colors */
+.tagTops        { background: var(--color-cat-tops-light);        color: var(--color-cat-tops);        }
+.tagBottoms     { background: var(--color-cat-bottoms-light);     color: var(--color-cat-bottoms);     }
+.tagShoes       { background: var(--color-cat-shoes-light);       color: var(--color-cat-shoes);       }
+.tagOuter       { background: var(--color-cat-outer-light);       color: var(--color-cat-outer);       }
+.tagAccessories { background: var(--color-cat-accessories-light); color: var(--color-cat-accessories); }

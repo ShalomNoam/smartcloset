@@ -89,6 +89,27 @@
   gap: var(--space-md);
 }
 
+@media (min-width: 768px) {
+  .grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 1280px) {
+  .page {
+    padding: var(--space-2xl) var(--space-xl);
+    padding-bottom: var(--space-2xl);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .title { font-size: 32px; }
+  .searchWrap { max-width: 420px; }
+  .grid { grid-template-columns: repeat(4, 1fr); }
+  .overlay { padding-bottom: 0; align-items: center; }
+  .modal {
+    border-radius: var(--radius-card);
+    max-width: 480px;
+  }
+}
+
 .cardWrap { animation: fadeSlideUp 0.35s ease both; }
 
 .skeletonCard { height: 160px; }

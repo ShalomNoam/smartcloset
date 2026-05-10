@@ -11,7 +11,6 @@
   overflow: hidden;
 }
 
-/* Decorative circle */
 .widget::after {
   content: '';
   position: absolute;
@@ -24,38 +23,35 @@
   pointer-events: none;
 }
 
-.left {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-}
+.left { display: flex; align-items: center; gap: var(--space-md); }
 
-.sunWrap {
-  animation: float 3s ease-in-out infinite;
-}
+.sunWrap { animation: sunPulse 4s ease-in-out infinite; }
 
-.sun {
-  color: var(--color-primary);
-}
+.sun { color: var(--color-primary); }
 
 .temp {
   font-family: var(--font-heading);
-  font-size: 26px;
+  font-size: 32px;
   font-weight: 700;
   color: var(--color-text-primary);
   line-height: 1;
 }
 
+/* Larger on desktop */
+@media (min-width: 1280px) {
+  .widget { padding: var(--space-xl); }
+  .temp   { font-size: 44px; }
+  .sunWrap svg { width: 48px !important; height: 48px !important; }
+}
+
 .desc {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--color-text-secondary);
-  margin-top: 3px;
+  margin-top: 4px;
   font-weight: 400;
 }
 
-.right {
-  text-align: right;
-}
+.right { text-align: right; }
 
 .badge {
   font-size: 10px;
@@ -72,7 +68,11 @@
 
 .suggestion {
   font-family: var(--font-heading);
-  font-size: 15px;
+  font-size: 16px;
   color: var(--color-text-primary);
   font-weight: 600;
+}
+
+@media (min-width: 1280px) {
+  .suggestion { font-size: 20px; }
 }

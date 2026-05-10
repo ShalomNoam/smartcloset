@@ -108,6 +108,39 @@
 
 .outfitWrap { animation: fadeSlideUp 0.35s ease both; }
 
+@media (min-width: 768px) {
+  .outfitList {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+  }
+}
+
+@media (min-width: 1280px) {
+  .page {
+    padding: var(--space-2xl) var(--space-xl);
+    padding-bottom: var(--space-2xl);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .eventGrid {
+    grid-template-columns: repeat(4, 1fr);
+    margin-bottom: var(--space-xl);
+  }
+  .eventBtn {
+    flex-direction: row;
+    justify-content: center;
+    padding: var(--space-md) var(--space-lg);
+    gap: var(--space-sm);
+  }
+  .outfitList {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+  }
+  .outfitWrap { animation-delay: 0ms !important; }
+}
+
 /* AI note */
 .aiNote {
   display: flex;

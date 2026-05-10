@@ -9,6 +9,7 @@
   box-shadow: var(--shadow-card);
   transition: var(--transition);
   animation: fadeSlideUp 0.35s ease both;
+  position: relative;
 }
 
 .card:hover {
@@ -17,11 +18,36 @@
   transform: translateY(-2px);
 }
 
-.icons {
+/* Score badge — top-right corner */
+.scoreBadge {
+  position: absolute;
+  top: var(--space-sm);
+  right: 52px; /* leave room for heart */
   display: flex;
-  gap: var(--space-sm);
-  flex-shrink: 0;
+  flex-direction: column;
+  align-items: center;
+  background: var(--color-accent-light);
+  border-radius: var(--radius-input);
+  padding: 2px 8px;
 }
+
+.scoreNum {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-accent);
+  line-height: 1.2;
+}
+
+.scoreLabel {
+  font-size: 8px;
+  font-weight: 500;
+  color: var(--color-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* Icons */
+.icons { display: flex; gap: var(--space-sm); flex-shrink: 0; }
 
 .iconCircle {
   width: 44px;
@@ -34,22 +60,20 @@
   transition: var(--transition);
 }
 
-.card:hover .iconCircle {
-  background: var(--color-accent-light);
-}
+.card:hover .iconCircle { background: var(--color-accent-light); }
 
-.icon {
-  color: var(--color-primary);
-  transition: var(--transition);
-}
+.icon { color: var(--color-primary); transition: var(--transition); }
+.card:hover .icon { color: var(--color-accent); }
 
-.card:hover .icon {
-  color: var(--color-accent);
-}
+/* Info */
+.info { flex: 1; min-width: 0; }
 
-.info {
-  flex: 1;
-  min-width: 0;
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-xs);
 }
 
 .name {
@@ -62,12 +86,19 @@
   text-overflow: ellipsis;
 }
 
-.tags {
-  display: flex;
-  gap: var(--space-xs);
-  margin-top: var(--space-xs);
-  flex-wrap: wrap;
+.styleTag {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  padding: 2px 8px;
+  border-radius: var(--radius-chip);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  flex-shrink: 0;
 }
+
+.tags { display: flex; gap: var(--space-xs); flex-wrap: wrap; }
 
 .tag {
   font-size: 10px;

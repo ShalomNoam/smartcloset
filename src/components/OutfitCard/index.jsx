@@ -10,9 +10,22 @@ const CATEGORY_ICON = {
   Accessories: Gem,
 }
 
+const STYLE_TAGS  = ['Trending', 'Classic', 'Bold', 'Minimal', 'Chic', 'Street']
+const STYLE_SCORES = [94, 88, 96, 82, 91, 85, 97, 89, 93, 87, 95, 90]
+
 export default function OutfitCard({ outfit, onToggleSave }) {
+  const styleTag   = STYLE_TAGS[(outfit.id - 1) % STYLE_TAGS.length]
+  const matchScore = STYLE_SCORES[(outfit.id - 1) % STYLE_SCORES.length]
+
   return (
     <div className={styles.card}>
+      {/* Style score badge */}
+      <div className={styles.scoreBadge}>
+        <span className={styles.scoreNum}>{matchScore}%</span>
+        <span className={styles.scoreLabel}>match</span>
+      </div>
+
+      {/* Item icons */}
       <div className={styles.icons}>
         {outfit.items.map((item, i) => {
           const Icon = CATEGORY_ICON[item.category] ?? Shirt
@@ -24,8 +37,12 @@ export default function OutfitCard({ outfit, onToggleSave }) {
         })}
       </div>
 
+      {/* Info */}
       <div className={styles.info}>
-        <p className={styles.name}>{outfit.name}</p>
+        <div className={styles.nameRow}>
+          <p className={styles.name}>{outfit.name}</p>
+          <span className={styles.styleTag}>{styleTag}</span>
+        </div>
         <div className={styles.tags}>
           {outfit.tags.map((tag) => (
             <span key={tag} className={styles.tag}>{tag}</span>
