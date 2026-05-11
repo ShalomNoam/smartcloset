@@ -1,55 +1,184 @@
-/* ── Page ── */
+/* ── Split Page Layout ── */
 .page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #FFF5F9 0%, #F5F0FF 100%);
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-lg);
+  flex-direction: row;
   animation: fadeIn 0.35s ease;
 }
 
-/* ── Card ── */
-.card {
-  width: 100%;
-  max-width: 420px;
-  background: var(--color-card);
-  border-radius: 20px;
-  border: 1.5px solid #F0E0F5;
-  box-shadow: 0 8px 32px rgba(255, 107, 157, 0.12);
-  padding: var(--space-2xl) var(--space-xl);
-  animation: fadeSlideUp 0.45s ease both;
+/* ── Branding Panel (right in RTL) ── */
+.brandPanel {
+  display: none;
+  flex: 0 0 45%;
+  background: linear-gradient(160deg, #12001F 0%, #1A0533 45%, #2D1060 100%);
+  position: relative;
+  overflow: hidden;
 }
 
-/* ── Logo ── */
-.logo {
+@media (min-width: 768px) {
+  .brandPanel { display: flex; }
+}
+
+.brandInner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px 44px;
+  height: 100%;
+  width: 100%;
+}
+
+.brandLogo {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: 10px;
   text-decoration: none;
-  margin-bottom: var(--space-xl);
 }
 
-.logoIcon {
-  width: 34px; height: 34px;
-  background: var(--color-primary);
-  border-radius: 10px;
+.brandLogoIcon {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
   color: #fff;
   flex-shrink: 0;
 }
 
-.logoText {
-  font-family: var(--font-heading);
-  font-size: 18px;
+.brandLogoText {
+  font-family: 'Syne', 'Rubik', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.brandBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  padding: 40px 0;
+}
+
+.brandBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(194, 24, 91, 0.18);
+  border: 1px solid rgba(194, 24, 91, 0.35);
+  color: #F48FB1;
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.brandHeadline {
+  font-family: 'Syne', 'Rubik', sans-serif;
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.brandSub {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.brandList {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.brandList li {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Particles in branding panel ── */
+.brandParticles { position: absolute; inset: 0; z-index: 1; }
+.bp1,.bp2,.bp3,.bp4,.bp5,.bp6 {
+  position: absolute;
+  border-radius: 50%;
+  animation: particleRise linear infinite;
+  opacity: 0;
+}
+.bp1 { bottom:5%;  left:15%; width:6px;  height:6px;  background:rgba(194,24,91,0.5);  animation-duration:5.5s; animation-delay:0s;    }
+.bp2 { bottom:10%; left:35%; width:4px;  height:4px;  background:rgba(69,39,160,0.6); animation-duration:7s;   animation-delay:1s;    }
+.bp3 { bottom:3%;  left:55%; width:5px;  height:5px;  background:rgba(194,24,91,0.4);  animation-duration:6s;   animation-delay:2s;    }
+.bp4 { bottom:8%;  left:70%; width:3px;  height:3px;  background:rgba(255,255,255,0.3);animation-duration:8s;   animation-delay:0.5s;  }
+.bp5 { bottom:2%;  left:85%; width:6px;  height:6px;  background:rgba(69,39,160,0.5); animation-duration:6.5s; animation-delay:1.5s;  }
+.bp6 { bottom:6%;  left:25%; width:4px;  height:4px;  background:rgba(255,255,255,0.25);animation-duration:7.5s;animation-delay:3s;    }
+
+/* ── Form Panel (left in RTL) ── */
+.formPanel {
+  flex: 1;
+  background: #FAFAFA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl) var(--space-lg);
+  min-height: 100vh;
+}
+
+.formCard {
+  width: 100%;
+  max-width: 420px;
+  background: var(--color-card);
+  border-radius: 24px;
+  border: 1.5px solid #EDE0F5;
+  box-shadow: 0 8px 40px rgba(69, 39, 160, 0.08);
+  padding: 36px 36px;
+  animation: fadeSlideUp 0.45s ease both;
+}
+
+/* ── Mobile logo ── */
+.mobileLogo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  margin-bottom: var(--space-xl);
+}
+
+.mobileLogoIcon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.mobileLogoText {
+  font-family: 'Syne', 'Rubik', sans-serif;
+  font-size: 17px;
   font-weight: 700;
   color: var(--color-text-primary);
+}
+
+@media (min-width: 768px) {
+  .mobileLogo { display: none; }
 }
 
 /* ── Headings ── */
 .title {
   font-family: var(--font-heading);
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--color-text-primary);
   margin-bottom: var(--space-xs);
@@ -58,20 +187,20 @@
 .subtitle {
   font-size: 14px;
   color: var(--color-text-secondary);
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-lg);
 }
 
 /* ── Form ── */
 .form {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-sm);
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .label {
@@ -83,10 +212,10 @@
 
 .input {
   width: 100%;
-  padding: 13px var(--space-md);
+  padding: 12px var(--space-md);
   border: 1.5px solid #E0D0F5;
   border-radius: var(--radius-input);
-  background: var(--color-card);
+  background: #fff;
   font-size: 14px;
   color: var(--color-text-primary);
   transition: var(--transition);
@@ -112,11 +241,11 @@
 
 /* ── Password field ── */
 .pwdWrap { position: relative; }
-.pwdWrap .input { padding-right: 44px; }
+.pwdWrap .input { padding-left: 44px; }
 
 .eyeBtn {
   position: absolute;
-  right: 12px;
+  left: 12px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
@@ -154,8 +283,8 @@
 .strengthLabel {
   font-size: 11px;
   font-weight: 700;
-  min-width: 40px;
-  text-align: right;
+  min-width: 44px;
+  text-align: left;
   transition: color 0.3s ease;
   letter-spacing: 0.2px;
 }
@@ -164,29 +293,29 @@
 .submitBtn {
   width: 100%;
   padding: 14px;
-  background: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary), #E91E8C);
   color: #fff;
   border-radius: var(--radius-button);
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   border: none;
   cursor: pointer;
   transition: var(--transition);
-  box-shadow: var(--shadow-btn);
+  box-shadow: 0 4px 18px rgba(194, 24, 91, 0.35);
   margin-top: var(--space-sm);
   font-family: var(--font-body);
+  letter-spacing: 0.3px;
 }
 .submitBtn:hover {
-  background: var(--color-primary-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 22px rgba(255, 107, 157, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(194, 24, 91, 0.5);
 }
 .submitBtn:active { transform: scale(0.97); }
 
 /* ── Sign-in row ── */
 .signInRow {
   text-align: center;
-  margin-top: var(--space-xl);
+  margin-top: var(--space-lg);
   font-size: 14px;
   color: var(--color-text-secondary);
 }

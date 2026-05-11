@@ -16,7 +16,7 @@ export default function HeartButton({ initialSaved = false, onToggle }) {
     <button
       onClick={handleClick}
       className={`${styles.btn} ${saved ? styles.saved : ''}`}
-      aria-label={saved ? 'Remove from saved' : 'Save outfit'}
+      aria-label={saved ? 'הסר מהשמורים' : 'שמור לוק'}
     >
       <Heart size={18} strokeWidth={2} className={styles.heart} />
     </button>

@@ -5,8 +5,8 @@
   gap: 6px;
   padding: 14px 28px;
   border-radius: var(--radius-button);
-  font-size: 15px;
-  font-weight: 600;
+  font-size: var(--text-base);
+  font-weight: 700;
   letter-spacing: 0.3px;
   transition: var(--transition);
   white-space: nowrap;
@@ -20,13 +20,13 @@
 /* Primary */
 .primary {
   background: var(--color-primary);
-  color: var(--color-card);
+  color: #fff;
   box-shadow: var(--shadow-btn);
 }
 
 .primary:hover:not(:disabled) {
   background: var(--color-primary-hover);
-  box-shadow: 0 6px 22px rgba(255, 107, 157, 0.5);
+  box-shadow: 0 6px 22px rgba(194, 24, 91, 0.5);
   transform: translateY(-1px);
 }
 
@@ -43,7 +43,11 @@
   box-shadow: none;
 }
 
-.ghost:hover:not(:disabled) { background: var(--color-accent-light); }
+.ghost:hover:not(:disabled) {
+  background: var(--color-accent-light);
+  transform: translateY(-1px);
+}
+
 .ghost:active:not(:disabled) { transform: scale(0.97); }
 
 /* Disabled */

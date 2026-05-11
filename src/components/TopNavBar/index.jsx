@@ -3,10 +3,10 @@ import { Shirt } from 'lucide-react'
 import styles from './TopNavBar.module.css'
 
 const NAV = [
-  { path: '/dashboard', label: 'Home'      },
-  { path: '/closet',    label: 'My Closet' },
-  { path: '/outfits',   label: 'Outfits'   },
-  { path: '/saved',     label: 'Saved'     },
+  { path: '/dashboard', label: 'בית'       },
+  { path: '/closet',    label: 'הארון שלי'  },
+  { path: '/outfits',   label: 'לוקים'     },
+  { path: '/saved',     label: 'שמורים'    },
 ]
 
 export default function TopNavBar() {
@@ -20,13 +20,13 @@ export default function TopNavBar() {
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
-        {/* Logo */}
         <Link to="/dashboard" className={styles.logo}>
-          <Shirt size={20} strokeWidth={2} className={styles.logoIcon} />
+          <div className={styles.logoIcon}>
+            <Shirt size={18} strokeWidth={1.75} />
+          </div>
           <span className={styles.logoText}>SmartCloset</span>
         </Link>
 
-        {/* Nav links */}
         <nav className={styles.nav}>
           {NAV.map(({ path, label }) => (
             <Link

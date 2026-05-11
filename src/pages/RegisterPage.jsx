@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { Shirt, Eye, EyeOff } from 'lucide-react'
+import { Shirt, Eye, EyeOff, Sparkles } from 'lucide-react'
 import styles from './RegisterPage.module.css'
 
 function getStrength(pwd) {
@@ -10,10 +10,10 @@ function getStrength(pwd) {
   const hasSpecial = /[^A-Za-z0-9]/.test(pwd)
   const hasUpper   = /[A-Z]/.test(pwd)
   const score = [hasLen, hasNumber, hasSpecial, hasUpper].filter(Boolean).length
-  if (score <= 1) return { level: 1, label: 'Weak',   color: '#FF4444' }
-  if (score === 2) return { level: 2, label: 'Fair',   color: '#FF8C42' }
-  if (score === 3) return { level: 3, label: 'Good',   color: '#FFC107' }
-  return             { level: 4, label: 'Strong', color: '#4CAF50' }
+  if (score <= 1) return { level: 1, label: 'חלשה',  color: '#FF4444' }
+  if (score === 2) return { level: 2, label: 'בינונית', color: '#FF8C42' }
+  if (score === 3) return { level: 3, label: 'טובה',   color: '#FFC107' }
+  return             { level: 4, label: 'חזקה',   color: '#4CAF50' }
 }
 
 export default function RegisterPage() {
@@ -34,12 +34,12 @@ export default function RegisterPage() {
 
   function validate() {
     const e = {}
-    if (!fullName.trim())                   e.fullName   = 'Full name is required'
-    if (!email.trim())                      e.email      = 'Email is required'
-    else if (!/\S+@\S+\.\S+/.test(email))  e.email      = 'Enter a valid email address'
-    if (!password)                          e.password   = 'Password is required'
-    else if (password.length < 6)           e.password   = 'Minimum 6 characters'
-    if (confirmPwd !== password)            e.confirmPwd = 'Passwords do not match'
+    if (!fullName.trim())                   e.fullName   = 'שם מלא נדרש'
+    if (!email.trim())                      e.email      = 'כתובת אימייל נדרשת'
+    else if (!/\S+@\S+\.\S+/.test(email))  e.email      = 'אימייל לא תקין'
+    if (!password)                          e.password   = 'סיסמה נדרשת'
+    else if (password.length < 6)           e.password   = 'מינימום 6 תווים'
+    if (confirmPwd !== password)            e.confirmPwd = 'הסיסמאות אינן תואמות'
     return e
   }
 
@@ -52,125 +52,156 @@ export default function RegisterPage() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.card}>
 
-        {/* Logo */}
-        <Link to="/" className={styles.logo}>
-          <div className={styles.logoIcon}>
-            <Shirt size={18} strokeWidth={1.75} />
-          </div>
-          <span className={styles.logoText}>SmartCloset</span>
-        </Link>
-
-        <h1 className={styles.title}>Create your account</h1>
-        <p className={styles.subtitle}>Start building your smart wardrobe</p>
-
-        <form className={styles.form} onSubmit={handleSubmit} noValidate>
-
-          {/* Full Name */}
-          <div className={styles.field}>
-            <label className={styles.label}>Full Name</label>
-            <input
-              type="text"
-              className={`${styles.input} ${errors.fullName ? styles.inputError : ''}`}
-              placeholder="Jane Doe"
-              value={fullName}
-              onChange={(e) => { setFullName(e.target.value); clearError('fullName') }}
-            />
-            {errors.fullName && <p className={styles.errorMsg}>{errors.fullName}</p>}
-          </div>
-
-          {/* Email */}
-          <div className={styles.field}>
-            <label className={styles.label}>Email</label>
-            <input
-              type="email"
-              className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => { setEmail(e.target.value); clearError('email') }}
-            />
-            {errors.email && <p className={styles.errorMsg}>{errors.email}</p>}
-          </div>
-
-          {/* Password */}
-          <div className={styles.field}>
-            <label className={styles.label}>Password</label>
-            <div className={styles.pwdWrap}>
-              <input
-                type={showPwd ? 'text' : 'password'}
-                className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
-                placeholder="Min. 6 characters"
-                value={password}
-                onChange={(e) => { setPassword(e.target.value); clearError('password') }}
-              />
-              <button
-                type="button"
-                className={styles.eyeBtn}
-                onClick={() => setShowPwd((v) => !v)}
-                aria-label={showPwd ? 'Hide password' : 'Show password'}
-              >
-                {showPwd ? <EyeOff size={16} strokeWidth={1.75} /> : <Eye size={16} strokeWidth={1.75} />}
-              </button>
+      {/* Branding Panel */}
+      <div className={styles.brandPanel}>
+        <div className={styles.brandInner}>
+          <Link to="/" className={styles.brandLogo}>
+            <div className={styles.brandLogoIcon}><Shirt size={22} strokeWidth={1.75} /></div>
+            <span className={styles.brandLogoText}>SmartCloset</span>
+          </Link>
+          <div className={styles.brandBody}>
+            <div className={styles.brandBadge}>
+              <Sparkles size={12} strokeWidth={2} />
+              הצטרפות חינמית
             </div>
-            {password && (
-              <div className={styles.strengthWrap}>
-                <div className={styles.strengthBars}>
-                  {[1, 2, 3, 4].map((n) => (
-                    <div
-                      key={n}
-                      className={styles.strengthBar}
-                      style={{ background: n <= strength.level ? strength.color : 'var(--color-border)' }}
-                    />
-                  ))}
-                </div>
-                <span className={styles.strengthLabel} style={{ color: strength.color }}>
-                  {strength.label}
-                </span>
-              </div>
-            )}
-            {errors.password && <p className={styles.errorMsg}>{errors.password}</p>}
+            <h2 className={styles.brandHeadline}>בנה את הארון<br />החכם שלך</h2>
+            <p className={styles.brandSub}>תוך 2 דקות תתחיל לקבל לוקים מ-AI.</p>
+            <ul className={styles.brandList}>
+              <li>✦ ניהול ארון חכם</li>
+              <li>✦ המלצות AI מותאמות אישית</li>
+              <li>✦ מחובר למזג האוויר</li>
+            </ul>
           </div>
-
-          {/* Confirm Password */}
-          <div className={styles.field}>
-            <label className={styles.label}>Confirm Password</label>
-            <div className={styles.pwdWrap}>
-              <input
-                type={showConf ? 'text' : 'password'}
-                className={`${styles.input} ${errors.confirmPwd ? styles.inputError : ''}`}
-                placeholder="Repeat your password"
-                value={confirmPwd}
-                onChange={(e) => { setConfirmPwd(e.target.value); clearError('confirmPwd') }}
-              />
-              <button
-                type="button"
-                className={styles.eyeBtn}
-                onClick={() => setShowConf((v) => !v)}
-                aria-label={showConf ? 'Hide password' : 'Show password'}
-              >
-                {showConf ? <EyeOff size={16} strokeWidth={1.75} /> : <Eye size={16} strokeWidth={1.75} />}
-              </button>
-            </div>
-            {errors.confirmPwd && <p className={styles.errorMsg}>{errors.confirmPwd}</p>}
+          <div className={styles.brandParticles} aria-hidden="true">
+            <div className={styles.bp1}/><div className={styles.bp2}/>
+            <div className={styles.bp3}/><div className={styles.bp4}/>
+            <div className={styles.bp5}/><div className={styles.bp6}/>
           </div>
-
-          <button type="submit" className={styles.submitBtn}>
-            Create Account ✦
-          </button>
-
-        </form>
-
-        <p className={styles.signInRow}>
-          Already have an account?{' '}
-          <Link to="/login" className={styles.signInLink}>Sign in</Link>
-        </p>
-
-        <p className={styles.backLink}>
-          <Link to="/" className={styles.backAnchor}>← Back to home</Link>
-        </p>
-
+        </div>
       </div>
+
+      {/* Form Panel */}
+      <div className={styles.formPanel}>
+        <div className={styles.formCard}>
+
+          <Link to="/" className={styles.mobileLogo}>
+            <div className={styles.mobileLogoIcon}><Shirt size={16} strokeWidth={1.75} /></div>
+            <span className={styles.mobileLogoText}>SmartCloset</span>
+          </Link>
+
+          <h1 className={styles.title}>צור חשבון ✦</h1>
+          <p className={styles.subtitle}>התחל לבנות את הארון החכם שלך</p>
+
+          <form className={styles.form} onSubmit={handleSubmit} noValidate>
+
+            {/* Full Name */}
+            <div className={styles.field}>
+              <label className={styles.label}>שם מלא</label>
+              <input
+                type="text"
+                className={`${styles.input} ${errors.fullName ? styles.inputError : ''}`}
+                placeholder="ישראל ישראלי"
+                value={fullName}
+                onChange={(e) => { setFullName(e.target.value); clearError('fullName') }}
+              />
+              {errors.fullName && <p className={styles.errorMsg}>{errors.fullName}</p>}
+            </div>
+
+            {/* Email */}
+            <div className={styles.field}>
+              <label className={styles.label}>כתובת אימייל</label>
+              <input
+                type="email"
+                className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
+                placeholder="your@email.com"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); clearError('email') }}
+                dir="ltr"
+              />
+              {errors.email && <p className={styles.errorMsg}>{errors.email}</p>}
+            </div>
+
+            {/* Password */}
+            <div className={styles.field}>
+              <label className={styles.label}>סיסמה</label>
+              <div className={styles.pwdWrap}>
+                <input
+                  type={showPwd ? 'text' : 'password'}
+                  className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
+                  placeholder="מינימום 6 תווים"
+                  value={password}
+                  onChange={(e) => { setPassword(e.target.value); clearError('password') }}
+                />
+                <button
+                  type="button"
+                  className={styles.eyeBtn}
+                  onClick={() => setShowPwd((v) => !v)}
+                  aria-label={showPwd ? 'הסתר סיסמה' : 'הצג סיסמה'}
+                >
+                  {showPwd ? <EyeOff size={16} strokeWidth={1.75} /> : <Eye size={16} strokeWidth={1.75} />}
+                </button>
+              </div>
+              {password && (
+                <div className={styles.strengthWrap}>
+                  <div className={styles.strengthBars}>
+                    {[1, 2, 3, 4].map((n) => (
+                      <div
+                        key={n}
+                        className={styles.strengthBar}
+                        style={{ background: n <= strength.level ? strength.color : 'var(--color-border)' }}
+                      />
+                    ))}
+                  </div>
+                  <span className={styles.strengthLabel} style={{ color: strength.color }}>
+                    {strength.label}
+                  </span>
+                </div>
+              )}
+              {errors.password && <p className={styles.errorMsg}>{errors.password}</p>}
+            </div>
+
+            {/* Confirm Password */}
+            <div className={styles.field}>
+              <label className={styles.label}>אימות סיסמה</label>
+              <div className={styles.pwdWrap}>
+                <input
+                  type={showConf ? 'text' : 'password'}
+                  className={`${styles.input} ${errors.confirmPwd ? styles.inputError : ''}`}
+                  placeholder="חזור על הסיסמה"
+                  value={confirmPwd}
+                  onChange={(e) => { setConfirmPwd(e.target.value); clearError('confirmPwd') }}
+                />
+                <button
+                  type="button"
+                  className={styles.eyeBtn}
+                  onClick={() => setShowConf((v) => !v)}
+                  aria-label={showConf ? 'הסתר סיסמה' : 'הצג סיסמה'}
+                >
+                  {showConf ? <EyeOff size={16} strokeWidth={1.75} /> : <Eye size={16} strokeWidth={1.75} />}
+                </button>
+              </div>
+              {errors.confirmPwd && <p className={styles.errorMsg}>{errors.confirmPwd}</p>}
+            </div>
+
+            <button type="submit" className={styles.submitBtn}>
+              צור חשבון ✦
+            </button>
+
+          </form>
+
+          <p className={styles.signInRow}>
+            כבר יש לך חשבון?{' '}
+            <Link to="/login" className={styles.signInLink}>התחבר</Link>
+          </p>
+
+          <p className={styles.backLink}>
+            <Link to="/" className={styles.backAnchor}>חזרה לדף הבית</Link>
+          </p>
+
+        </div>
+      </div>
+
     </div>
   )
 }

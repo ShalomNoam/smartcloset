@@ -1,29 +1,23 @@
 import { useNavigate, Link } from 'react-router-dom'
-import { Shirt, Sparkles, Cloud, Heart, ArrowRight, Upload, Calendar } from 'lucide-react'
+import { Shirt, Sparkles, Cloud, Calendar, Camera, Bot, Wand2 } from 'lucide-react'
 import styles from './LandingPage.module.css'
 
 const FEATURES = [
-  {
-    Icon: Sparkles,
-    title: 'Smart Recommendations',
-    desc:  'AI analyses your wardrobe, mood and weather to suggest the perfect outfit every single morning.',
-  },
-  {
-    Icon: Cloud,
-    title: 'Weather-Based Looks',
-    desc:  'Real-time weather integration ensures you are always dressed perfectly for the conditions outside.',
-  },
-  {
-    Icon: Heart,
-    title: 'Save Your Favorites',
-    desc:  'Heart the looks you love and build a curated collection of outfits you can revisit anytime.',
-  },
+  { Icon: Wand2,    title: 'המלצות AI אישיות',    desc: 'האלגוריתם לומד את הטעם שלך ומשתפר עם הזמן — כמו סטייליסט אישי שמכיר אותך.' },
+  { Icon: Cloud,    title: 'מותאם למזג האוויר',   desc: 'מחובר לנתוני מזג אוויר בזמן אמת — לא תצא עם סוודר ביום חם לעולם.' },
+  { Icon: Calendar, title: 'לכל אירוע',           desc: 'עבודה, מסיבה, חתונה, ספורט — תמיד הלוק הנכון לרגע הנכון.' },
 ]
 
 const STEPS = [
-  { num: '01', Icon: Upload,   title: 'Upload your clothes',  desc: 'Add items from your wardrobe by category, colour and season in seconds.' },
-  { num: '02', Icon: Calendar, title: 'Pick an occasion',     desc: 'Tell SmartCloset where you\'re headed — work, party, wedding or the gym.' },
-  { num: '03', Icon: Sparkles, title: 'Get your look',        desc: 'Receive AI-curated outfit recommendations tailored just for you.' },
+  { num: '01', Icon: Camera,   title: 'צלם את הארון',    desc: 'צלם כל בגד פעם אחת. ה-AI מזהה אוטומטית צבע, סגנון וקטגוריה.' },
+  { num: '02', Icon: Bot,      title: 'ה-AI לומד אותך',  desc: 'האלגוריתם מנתח את הסגנון שלך, מזג האוויר, והאירועים ביומן.' },
+  { num: '03', Icon: Sparkles, title: 'קבל לוק כל יום',  desc: 'בבוקר מחכה לך לוק מוכן. לחץ רענון לקבל אפשרות אחרת.' },
+]
+
+const TESTIMONIALS = [
+  { initial: 'מ', name: 'מיכאל, 28', quote: 'חסכתי 20 דקות כל בוקר. הלוקים תמיד מדויקים לסגנון שלי.' },
+  { initial: 'ד', name: 'דנה, 31',   quote: 'סוף סוף מנצלת את כל הבגדים שיש לי בארון. כל שבוע לוק חדש.' },
+  { initial: 'י', name: 'יואב, 25',  quote: 'המרצה שלי שאל אם שכרתי סטייליסט. עניתי שיש לי AI.' },
 ]
 
 export default function LandingPage() {
@@ -36,53 +30,122 @@ export default function LandingPage() {
       <nav className={styles.nav}>
         <div className={styles.navInner}>
           <Link to="/" className={styles.logo}>
-            <div className={styles.logoIcon}>
-              <Shirt size={18} strokeWidth={1.75} />
-            </div>
+            <div className={styles.logoIcon}><Shirt size={18} strokeWidth={1.75} /></div>
             <span className={styles.logoText}>SmartCloset</span>
           </Link>
           <div className={styles.navActions}>
-            <Link to="/login" className={styles.navSignIn}>Sign In</Link>
-            <button className={styles.navCta} onClick={() => navigate('/register')}>
-              Get Started
-            </button>
+            <Link to="/login"    className={styles.navSignIn}>התחבר</Link>
+            <button className={styles.navCta} onClick={() => navigate('/register')}>התחל בחינם</button>
           </div>
         </div>
       </nav>
 
       {/* ── Hero ── */}
       <section className={styles.hero}>
-        <div className={styles.heroInner}>
-          <div className={styles.heroBadge}>
-            <Sparkles size={12} strokeWidth={2} />
-            AI-Powered Wardrobe
+        {/* Particles */}
+        <div className={styles.particles} aria-hidden="true">
+          <div className={styles.p1}/><div className={styles.p2}/><div className={styles.p3}/>
+          <div className={styles.p4}/><div className={styles.p5}/><div className={styles.p6}/>
+          <div className={styles.p7}/><div className={styles.p8}/><div className={styles.p9}/>
+          <div className={styles.p10}/><div className={styles.p11}/><div className={styles.p12}/>
+        </div>
+
+        <div className={styles.heroGrid}>
+          {/* Text — right side in RTL */}
+          <div className={styles.heroText}>
+            <div className={styles.heroBadge}>
+              <Sparkles size={11} strokeWidth={2} />
+              מבוסס בינה מלאכותית
+            </div>
+            <h1 className={styles.heroH1}>הארון<br />החכם שלך</h1>
+            <p className={styles.heroSubH2}>הבגדים כבר שם. ה-AI יחליט מה ללבוש.</p>
+            <p className={styles.heroBody}>
+              כל בוקר ה-AI מנתח את מזג האוויר, לוח היום שלך, והסגנון האישי שלך
+              — ובוחר לך לוק מושלם מהארון שלך.
+            </p>
+            <div className={styles.heroCtas}>
+              <button className={styles.ctaPrimary} onClick={() => navigate('/register')}>✦ התחל בחינם</button>
+              <button className={styles.ctaGhost}   onClick={() => navigate('/login')}>צפה בהדגמה</button>
+            </div>
+            <p className={styles.trustLine}>⭐ 4.9 · 10,000+ משתמשים · ללא כרטיס אשראי</p>
           </div>
-          <h1 className={styles.heroHeading}>
-            Dress Smarter,<br />Every Day.
-          </h1>
-          <p className={styles.heroSub}>
-            Your AI-powered digital wardrobe — get outfit recommendations tailored
-            to your style, weather, and occasion.
-          </p>
-          <div className={styles.heroCtas}>
-            <button className={styles.ctaPrimary} onClick={() => navigate('/register')}>
-              ✦ Get Started Free
-            </button>
-            <button className={styles.ctaGhost} onClick={() => navigate('/login')}>
-              Sign In
-            </button>
+
+          {/* Phone mockup — left side in RTL */}
+          <div className={styles.heroMockup}>
+            <div className={styles.mockupWrap}>
+              <div className={styles.phone}>
+                <div className={styles.phoneNotch} />
+                <div className={styles.phoneScreen}>
+                  <div className={styles.mockGreeting}>בוקר טוב, נועם ✨</div>
+                  <div className={styles.mockWeatherBar}>
+                    <span>22° · תל אביב</span>
+                    <span className={styles.mockWeatherBadge}>בהיר</span>
+                  </div>
+                  <div className={styles.mockCard}>
+                    <div className={styles.mockAiBadge}>
+                      <span className={styles.mockPulseDot} />
+                      ✦ AI בחר עבורך · 94%
+                    </div>
+                    <div className={styles.mockItems}>
+                      <div className={styles.mockItem}>
+                        <div className={styles.mockItemIcon} />
+                        <span>חולצה לבנה</span>
+                      </div>
+                      <div className={styles.mockDivider} />
+                      <div className={styles.mockItem}>
+                        <div className={styles.mockItemIcon} />
+                        <span>ג'ינס כחול</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={styles.mockBtn}>✦ קבל את הלוק שלי</div>
+                  <div className={styles.mockStats}>
+                    <div className={styles.mockStat}>
+                      <span className={styles.mockStatNum}>14</span>
+                      <span className={styles.mockStatLabel}>פריטים</span>
+                    </div>
+                    <div className={styles.mockStat}>
+                      <span className={styles.mockStatNum}>94%</span>
+                      <span className={styles.mockStatLabel}>התאמה</span>
+                    </div>
+                    <div className={styles.mockStat}>
+                      <span className={styles.mockStatNum}>7</span>
+                      <span className={styles.mockStatLabel}>ימים</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.phoneGlow} aria-hidden="true" />
+            </div>
           </div>
         </div>
-        <div className={styles.blob1} aria-hidden="true" />
-        <div className={styles.blob2} aria-hidden="true" />
-        <div className={styles.blob3} aria-hidden="true" />
+      </section>
+
+      {/* ── How It Works ── */}
+      <section className={styles.howItWorks}>
+        <div className={styles.sectionInner}>
+          <p className={styles.darkEyebrow}>פשוט כמו 1-2-3</p>
+          <h2 className={styles.darkTitle}>איך זה עובד?</h2>
+          <div className={styles.stepsRow}>
+            {STEPS.map(({ num, Icon, title, desc }) => (
+              <div key={num} className={styles.step}>
+                <div className={styles.stepNum}>{num}</div>
+                <div className={styles.stepIconWrap}>
+                  <Icon size={26} strokeWidth={1.5} className={styles.stepIcon} />
+                </div>
+                <h3 className={styles.stepTitle}>{title}</h3>
+                <p className={styles.stepDesc}>{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* ── Features ── */}
       <section className={styles.features}>
         <div className={styles.sectionInner}>
-          <p className={styles.sectionEyebrow}>Why SmartCloset?</p>
-          <h2 className={styles.sectionTitle}>Everything your wardrobe needs</h2>
+          <p className={styles.lightEyebrow}>למה SmartCloset?</p>
+          <h2 className={styles.lightTitle}>כל מה שהארון שלך צריך</h2>
           <div className={styles.featureGrid}>
             {FEATURES.map(({ Icon, title, desc }) => (
               <div key={title} className={styles.featureCard}>
@@ -97,47 +160,42 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── How it works ── */}
-      <section className={styles.howItWorks}>
+      {/* ── Social Proof ── */}
+      <section className={styles.socialProof}>
         <div className={styles.sectionInner}>
-          <p className={styles.sectionEyebrow}>Simple as 1-2-3</p>
-          <h2 className={styles.sectionTitle}>How it works</h2>
-          <div className={styles.stepsRow}>
-            {STEPS.map(({ num, Icon, title, desc }, i) => (
-              <div key={num} className={styles.stepWrap}>
-                <div className={styles.step}>
-                  <div className={styles.stepNum}>{num}</div>
-                  <div className={styles.stepIconWrap}>
-                    <Icon size={22} strokeWidth={1.75} className={styles.stepIcon} />
-                  </div>
-                  <h3 className={styles.stepTitle}>{title}</h3>
-                  <p className={styles.stepDesc}>{desc}</p>
-                </div>
-                {i < STEPS.length - 1 && (
-                  <ArrowRight size={20} strokeWidth={1.5} className={styles.stepArrow} />
-                )}
+          <p className={styles.darkEyebrow}>לא רק אנחנו אומרים</p>
+          <h2 className={styles.darkTitle}>הם כבר לובשים חכם</h2>
+          <div className={styles.testimonialGrid}>
+            {TESTIMONIALS.map(({ initial, name, quote }) => (
+              <div key={name} className={styles.testimonialCard}>
+                <div className={styles.avatarCircle}>{initial}</div>
+                <div className={styles.starRow}>{'★★★★★'.split('').map((s, i) => <span key={i} className={styles.star}>{s}</span>)}</div>
+                <p className={styles.testimonialName}>{name}</p>
+                <p className={styles.testimonialQuote}>"{quote}"</p>
               </div>
             ))}
           </div>
-          <div className={styles.howCta}>
-            <button className={styles.ctaPrimary} onClick={() => navigate('/register')}>
-              ✦ Start For Free
-            </button>
-          </div>
         </div>
+      </section>
+
+      {/* ── Final CTA ── */}
+      <section className={styles.finalCta}>
+        <h2 className={styles.finalCtaTitle}>מוכן להתחיל?</h2>
+        <p className={styles.finalCtaSub}>הצטרף לאלפי אנשים שלובשים חכם כל יום</p>
+        <button className={styles.finalCtaBtn} onClick={() => navigate('/register')}>
+          ✦ התחל עכשיו — בחינם
+        </button>
       </section>
 
       {/* ── Footer ── */}
       <footer className={styles.footer}>
         <div className={styles.footerInner}>
           <div className={styles.footerLogo}>
-            <div className={styles.footerLogoIcon}>
-              <Shirt size={14} strokeWidth={1.75} />
-            </div>
+            <div className={styles.footerLogoIcon}><Shirt size={14} strokeWidth={1.75} /></div>
             <span className={styles.footerLogoText}>SmartCloset</span>
           </div>
-          <p className={styles.footerTagline}>Your AI-powered digital wardrobe</p>
-          <p className={styles.footerCopy}>© 2026 SmartCloset. All rights reserved.</p>
+          <p className={styles.footerTagline}>הארון החכם שלך</p>
+          <p className={styles.footerCopy}>© 2025 SmartCloset · כל הזכויות שמורות</p>
         </div>
       </footer>
 

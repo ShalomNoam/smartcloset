@@ -3,10 +3,10 @@ import { Home, Shirt, Heart, Sparkles } from 'lucide-react'
 import styles from './BottomNavBar.module.css'
 
 const NAV = [
-  { path: '/dashboard', label: 'Home',    Icon: Home     },
-  { path: '/closet',    label: 'Closet',  Icon: Shirt    },
-  { path: '/saved',     label: 'Saved',   Icon: Heart    },
-  { path: '/outfits',   label: 'Shop',    Icon: Sparkles },
+  { path: '/dashboard', label: 'בית',    Icon: Home     },
+  { path: '/closet',    label: 'ארון',   Icon: Shirt    },
+  { path: '/saved',     label: 'שמורים', Icon: Heart    },
+  { path: '/outfits',   label: 'לוקים',  Icon: Sparkles },
 ]
 
 export default function BottomNavBar() {

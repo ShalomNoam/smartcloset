@@ -1,21 +1,18 @@
 .nav {
   position: fixed;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 430px;
-  height: var(--nav-height);
-  background: var(--color-card);
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--color-surface);
   border-top: 1px solid var(--color-border);
   display: flex;
-  align-items: center;
   justify-content: space-around;
-  z-index: 100;
-  box-shadow: 0 -4px 20px rgba(255, 107, 157, 0.06);
+  align-items: center;
+  height: var(--nav-height);
+  box-shadow: 0 -4px 20px rgba(69, 39, 160, 0.08);
 }
 
-/* Hidden on desktop — BottomNavBar is mobile-only */
 @media (min-width: 1280px) {
   .nav { display: none; }
 }
@@ -25,35 +22,38 @@
   flex-direction: column;
   align-items: center;
   gap: 3px;
-  padding: var(--space-sm) var(--space-md);
-  border-radius: var(--radius-input);
+  padding: 0 var(--space-md);
+  color: var(--color-text-muted);
   text-decoration: none;
-  transition: var(--transition);
   position: relative;
+  transition: var(--transition);
   min-width: 60px;
 }
 
-.tab:hover { background: var(--color-primary-light); }
+.tab:active { transform: scale(0.92); }
 
-.icon      { color: var(--color-text-secondary); transition: var(--transition); }
-.iconActive { color: var(--color-primary);        transition: var(--transition); }
+.icon      { color: var(--color-text-muted); transition: var(--transition); }
+.iconActive { color: var(--color-primary);   transition: var(--transition); }
 
-.label      { font-size: 10px; font-weight: 500; color: var(--color-text-secondary); letter-spacing: 0.2px; }
-.labelActive { font-size: 10px; font-weight: 600; color: var(--color-primary);        letter-spacing: 0.2px; }
+.label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  transition: var(--transition);
+}
+
+.labelActive {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-primary);
+  transition: var(--transition);
+}
 
 .dot {
   position: absolute;
-  bottom: 4px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 2px;
   width: 4px;
   height: 4px;
   border-radius: 50%;
   background: var(--color-primary);
-  animation: dotPop 0.2s ease;
-}
-
-@keyframes dotPop {
-  from { opacity: 0; transform: translateX(-50%) scale(0); }
-  to   { opacity: 1; transform: translateX(-50%) scale(1); }
 }

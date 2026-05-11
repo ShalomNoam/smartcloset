@@ -1,11 +1,10 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronLeft, Camera, Palette, Flower2, Sun, Leaf, Snowflake } from 'lucide-react'
-import PrimaryButton from '../components/PrimaryButton'
-import { seasons } from '../data/mockData'
+import { ChevronLeft, Camera, Palette, Flower2, Sun, Leaf, Snowflake, Sparkles } from 'lucide-react'
+import { seasons, CATEGORY_LABELS, SEASON_LABELS } from '../data/mockData'
 import styles from './AddItemPage.module.css'
 
-const CATEGORIES = ['Tops', 'Bottoms', 'Shoes', 'Outer', 'Accessories']
+const CATEGORIES_EN = ['Tops', 'Bottoms', 'Shoes', 'Outer', 'Accessories']
 
 const SEASON_ICONS = {
   Spring: Flower2,
@@ -14,33 +13,48 @@ const SEASON_ICONS = {
   Winter: Snowflake,
 }
 
+const AI_DETECTIONS = [
+  'חולצה לבנה · קיץ · Casual',
+  "ג'ינס כחול · כל עונה · יומיומי",
+  'בלייזר שחור · חורף · אלגנטי',
+  'נעלי ספורט · קיץ · ספורטיבי',
+]
+
 export default function AddItemPage() {
   const navigate = useNavigate()
   const fileRef  = useRef(null)
 
-  const [photo,      setPhoto]      = useState(null)
-  const [dragging,   setDragging]   = useState(false)
-  const [name,       setName]       = useState('')
-  const [category,   setCategory]   = useState('')
-  const [selSeasons, setSelSeasons] = useState([])
-  const [color,      setColor]      = useState('')
-  const [errors,     setErrors]     = useState({})
-  const [saved,      setSaved]      = useState(false)
+  const [photo,        setPhoto]        = useState(null)
+  const [dragging,     setDragging]     = useState(false)
+  const [aiDetecting,  setAiDetecting]  = useState(false)
+  const [aiResult,     setAiResult]     = useState(null)
+  const [name,         setName]         = useState('')
+  const [category,     setCategory]     = useState('')
+  const [selSeasons,   setSelSeasons]   = useState([])
+  const [color,        setColor]        = useState('')
+  const [errors,       setErrors]       = useState({})
+  const [saved,        setSaved]        = useState(false)
+
+  function triggerAiDetect() {
+    setAiDetecting(true)
+    setAiResult(null)
+    setTimeout(() => {
+      const result = AI_DETECTIONS[Math.floor(Math.random() * AI_DETECTIONS.length)]
+      setAiResult(result)
+      setAiDetecting(false)
+    }, 1500)
+  }
 
   function handlePhoto(e) {
     const file = e.target.files?.[0]
-    if (file) setPhoto(URL.createObjectURL(file))
+    if (file) {
+      setPhoto(URL.createObjectURL(file))
+      triggerAiDetect()
+    }
   }
 
-  function handleDragOver(e) {
-    e.preventDefault()
-    setDragging(true)
-  }
-
-  function handleDragLeave(e) {
-    e.preventDefault()
-    setDragging(false)
-  }
+  function handleDragOver(e) { e.preventDefault(); setDragging(true) }
+  function handleDragLeave(e) { e.preventDefault(); setDragging(false) }
 
   function handleDrop(e) {
     e.preventDefault()
@@ -48,6 +62,7 @@ export default function AddItemPage() {
     const file = e.dataTransfer.files?.[0]
     if (file && file.type.startsWith('image/')) {
       setPhoto(URL.createObjectURL(file))
+      triggerAiDetect()
     }
   }
 
@@ -63,10 +78,10 @@ export default function AddItemPage() {
 
   function validate() {
     const e = {}
-    if (!name.trim())          e.name     = 'Item name is required'
-    if (!category)             e.category = 'Please select a category'
-    if (!color.trim())         e.color    = 'Please enter a color'
-    if (!selSeasons.length)    e.seasons  = 'Select at least one season'
+    if (!name.trim())       e.name     = 'שם הפריט נדרש'
+    if (!category)          e.category = 'בחר קטגוריה'
+    if (!color.trim())      e.color    = 'הכנס צבע'
+    if (!selSeasons.length) e.seasons  = 'בחר לפחות עונה אחת'
     return e
   }
 
@@ -79,12 +94,13 @@ export default function AddItemPage() {
 
   return (
     <div className={styles.page}>
+
       <header className={styles.header}>
         <button className={styles.backBtn} onClick={() => navigate('/closet')}>
           <ChevronLeft size={18} strokeWidth={2.5} className={styles.backIcon} />
-          Back
+          חזרה
         </button>
-        <h1 className={styles.title}>Add New Item</h1>
+        <h1 className={styles.title}>הוסף לארון</h1>
         <div style={{ width: 60 }} />
       </header>
 
@@ -103,12 +119,29 @@ export default function AddItemPage() {
           onKeyDown={(e) => e.key === 'Enter' && fileRef.current?.click()}
         >
           {photo ? (
-            <img src={photo} alt="Preview" className={styles.photoPreview} />
+            <>
+              <img src={photo} alt="תצוגה מקדימה" className={styles.photoPreview} />
+              {/* AI detection overlay */}
+              {(aiDetecting || aiResult) && (
+                <div className={`${styles.aiDetectBadge} ${aiDetecting ? styles.aiDetecting : styles.aiDone}`}>
+                  <Sparkles size={12} strokeWidth={2} />
+                  {aiDetecting
+                    ? 'ה-AI מזהה...'
+                    : `✦ ה-AI זיהה: ${aiResult}`}
+                </div>
+              )}
+            </>
           ) : (
             <div className={styles.photoPlaceholder}>
               <Camera size={36} strokeWidth={1.25} className={styles.cameraIcon} />
-              <p className={styles.photoTitle}>{dragging ? 'Drop it here!' : 'Upload Photo'}</p>
-              <p className={styles.photoSub}>{dragging ? 'Release to add' : 'Drag & drop or tap to browse'}</p>
+              <p className={styles.photoTitle}>{dragging ? 'שחרר כאן!' : 'העלה תמונה'}</p>
+              <p className={styles.photoSub}>
+                {dragging ? 'שחרר להוספה' : 'גרור & שחרר או לחץ לבחירה'}
+              </p>
+              <p className={styles.aiHint}>
+                <Sparkles size={11} strokeWidth={2} />
+                ה-AI יזהה אוטומטית
+              </p>
             </div>
           )}
           <input
@@ -123,13 +156,14 @@ export default function AddItemPage() {
         {/* Form + Actions */}
         <div className={styles.formSide}>
           <div className={styles.form}>
+
             {/* Name */}
             <div className={styles.field}>
-              <label className={styles.label}>Item Name</label>
+              <label className={styles.label}>שם הפריט</label>
               <input
                 type="text"
                 className={`${styles.input} ${errors.name ? styles.inputError : ''}`}
-                placeholder="e.g. White Linen Shirt"
+                placeholder="לדוג׳ חולצה לבנה"
                 value={name}
                 onChange={(e) => { setName(e.target.value); clearError('name') }}
               />
@@ -138,15 +172,17 @@ export default function AddItemPage() {
 
             {/* Category */}
             <div className={styles.field}>
-              <label className={styles.label}>Category</label>
+              <label className={styles.label}>קטגוריה</label>
               <div className={styles.selectWrap}>
                 <select
                   className={`${styles.select} ${errors.category ? styles.inputError : ''}`}
                   value={category}
                   onChange={(e) => { setCategory(e.target.value); clearError('category') }}
                 >
-                  <option value="">Select a category...</option>
-                  {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                  <option value="">בחר קטגוריה...</option>
+                  {CATEGORIES_EN.map((c) => (
+                    <option key={c} value={c}>{CATEGORY_LABELS[c] ?? c}</option>
+                  ))}
                 </select>
               </div>
               {errors.category && <p className={styles.errorMsg}>{errors.category}</p>}
@@ -154,10 +190,10 @@ export default function AddItemPage() {
 
             {/* Season */}
             <div className={styles.field}>
-              <label className={styles.label}>Season</label>
+              <label className={styles.label}>עונות</label>
               <div className={styles.seasonRow}>
                 {seasons.map((s) => {
-                  const Icon    = SEASON_ICONS[s]
+                  const Icon     = SEASON_ICONS[s]
                   const isActive = selSeasons.includes(s)
                   return (
                     <button
@@ -167,7 +203,7 @@ export default function AddItemPage() {
                       className={`${styles.seasonChip} ${isActive ? styles.seasonActive : ''}`}
                     >
                       {Icon && <Icon size={13} strokeWidth={1.75} />}
-                      {s}
+                      {SEASON_LABELS[s] ?? s}
                     </button>
                   )
                 })}
@@ -177,13 +213,13 @@ export default function AddItemPage() {
 
             {/* Color */}
             <div className={styles.field}>
-              <label className={styles.label}>Color</label>
+              <label className={styles.label}>צבע</label>
               <div className={styles.colorWrap}>
-                <Palette size={16} strokeWidth={1.75} className={styles.paletteIcon} />
+                <Palette size={15} strokeWidth={1.75} className={styles.paletteIcon} />
                 <input
                   type="text"
                   className={`${styles.input} ${styles.colorInput} ${errors.color ? styles.inputError : ''}`}
-                  placeholder="e.g. Navy Blue"
+                  placeholder="לדוג׳ כחול נייבי"
                   value={color}
                   onChange={(e) => { setColor(e.target.value); clearError('color') }}
                 />
@@ -194,12 +230,16 @@ export default function AddItemPage() {
 
           {/* Actions */}
           <div className={styles.actions}>
-            <PrimaryButton variant="ghost" onClick={() => navigate('/closet')}>
-              Cancel
-            </PrimaryButton>
-            <PrimaryButton onClick={handleSave} disabled={saved}>
-              {saved ? '✓ Saved!' : '✦ Save Item'}
-            </PrimaryButton>
+            <button className={styles.cancelBtn} onClick={() => navigate('/closet')}>
+              ביטול
+            </button>
+            <button
+              className={`${styles.saveBtn} ${saved ? styles.saveDone : ''}`}
+              onClick={handleSave}
+              disabled={saved}
+            >
+              {saved ? '✓ נשמר!' : '✦ שמור פריט'}
+            </button>
           </div>
         </div>
       </div>

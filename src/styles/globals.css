@@ -1,49 +1,65 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
 
 /* ─────────────────────────────────────────
-   DESIGN TOKENS  (single source of truth)
+   DESIGN TOKENS
 ───────────────────────────────────────── */
 :root {
-  /* Core palette */
-  --color-primary:        #FF6B9D;
-  --color-primary-light:  #FFE4F0;
-  --color-primary-hover:  #ff5592;
-  --color-accent:         #7C5CBF;
-  --color-accent-light:   #F5F0FF;
-  --color-accent-dark:    #6b4dab;
+  /* ── Core palette ── */
+  --color-primary:        #C2185B;
+  --color-primary-hover:  #AD1457;
+  --color-primary-light:  #FCE4EC;
+  --color-accent:         #4527A0;
+  --color-accent-hover:   #311B92;
+  --color-accent-light:   #EDE7F6;
+  --color-background:     #F9F7FC;
+  --color-surface:        #FFFFFF;
+  --color-surface-2:      #F3EEF8;
+  --color-text-primary:   #12001F;
+  --color-text-secondary: #5D5470;
+  --color-text-muted:     #9E94B0;
+  --color-border:         #E5DFF0;
+  --color-border-strong:  #C9BFE0;
+  --color-success:        #1B873F;
+  --color-error:          #C62828;
+  --color-warning:        #E65100;
 
-  /* Surface */
-  --color-background:     #FAFAFA;
-  --color-card:           #FFFFFF;
+  /* Legacy aliases for component compatibility */
+  --color-card:           var(--color-surface);
+  --color-warm-light:     #FFF8E7;
 
-  /* Text */
-  --color-text-primary:   #1A1A2E;
-  --color-text-secondary: #888888;
-
-  /* Status */
-  --color-success:        #4CAF50;
-  --color-success-light:  #E8F5E9;
-  --color-error:          #FF4444;
-  --color-border:         #F0E0F5;
-
-  /* Category badge colors */
-  --color-cat-tops:             var(--color-primary);
-  --color-cat-tops-light:       var(--color-primary-light);
-  --color-cat-bottoms:          var(--color-accent);
-  --color-cat-bottoms-light:    var(--color-accent-light);
-  --color-cat-shoes:            #4CAF50;
-  --color-cat-shoes-light:      #E8F5E9;
-  --color-cat-outer:            #FF8C42;
-  --color-cat-outer-light:      #FFF3E8;
-  --color-cat-accessories:      #00BCD4;
+  /* ── Category badge colors ── */
+  --color-cat-tops:              #C2185B;
+  --color-cat-tops-light:        #FCE4EC;
+  --color-cat-bottoms:           #4527A0;
+  --color-cat-bottoms-light:     #EDE7F6;
+  --color-cat-shoes:             #1B873F;
+  --color-cat-shoes-light:       #E8F5E9;
+  --color-cat-outer:             #E65100;
+  --color-cat-outer-light:       #FFF3E8;
+  --color-cat-accessories:       #00838F;
   --color-cat-accessories-light: #E0F7FA;
 
-  /* Extended */
-  --color-warm-light:    #FFF8E7;
+  /* ── Shadows ── */
+  --shadow-sm:   0 2px 8px rgba(69, 39, 160, 0.08);
+  --shadow-md:   0 4px 20px rgba(69, 39, 160, 0.12);
+  --shadow-lg:   0 8px 40px rgba(69, 39, 160, 0.18);
+  --shadow-glow: 0 0 30px rgba(194, 24, 91, 0.25);
+  --shadow-card: 0 2px 8px rgba(69, 39, 160, 0.08);
+  --shadow-hover:0 4px 20px rgba(69, 39, 160, 0.12);
+  --shadow-btn:  0 4px 16px rgba(194, 24, 91, 0.35);
+  --shadow-nav:  0 2px 20px rgba(18, 0, 31, 0.08);
 
   /* ── Typography ── */
-  --font-heading: 'Playfair Display', Georgia, serif;
-  --font-body:    'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Syne', 'Rubik', sans-serif;
+  --font-body:    'Rubik', sans-serif;
+  --text-xs:   11px;
+  --text-sm:   13px;
+  --text-base: 15px;
+  --text-lg:   18px;
+  --text-xl:   24px;
+  --text-2xl:  32px;
+  --text-3xl:  48px;
+  --text-hero: 72px;
 
   /* ── Radius ── */
   --radius-card:   16px;
@@ -51,18 +67,12 @@
   --radius-chip:   20px;
   --radius-input:  12px;
 
-  /* ── Shadows ── */
-  --shadow-card:  0 2px 12px rgba(255, 107, 157, 0.08);
-  --shadow-hover: 0 8px 32px rgba(255, 107, 157, 0.18);
-  --shadow-btn:   0 4px 16px rgba(255, 107, 157, 0.35);
-  --shadow-nav:   0 2px 20px rgba(26, 26, 46, 0.06);
-
   /* ── Spacing ── */
-  --space-xs: 4px;
-  --space-sm: 8px;
-  --space-md: 16px;
-  --space-lg: 24px;
-  --space-xl: 32px;
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
   --space-2xl: 48px;
 
   /* ── Misc ── */
@@ -72,17 +82,22 @@
 }
 
 /* ─────────────────────────────────────────
-   RESET
+   RESET + RTL DIRECTION
 ───────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; }
+
+html {
+  direction: rtl;
+  height: 100%;
+}
 
 body {
   font-family: var(--font-body);
   color: var(--color-text-primary);
-  background: #dcc8e8;
+  background: #2D1060;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100%;
 }
 
 #root {
@@ -99,19 +114,19 @@ body {
   background: var(--color-background);
   position: relative;
   overflow-x: hidden;
-  box-shadow: 0 0 60px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.15);
 }
 
-/* Tablet+ — full width */
-@media (min-width: 768px) {
-  #root { background: var(--color-background); }
-  .app-wrapper { max-width: 100%; box-shadow: none; overflow: visible; }
-}
-
-/* Public pages (landing / login / register) — no pill constraint */
+/* Public pages (landing / auth) */
 .public-wrapper {
   width: 100%;
   min-height: 100vh;
+}
+
+/* Tablet+ */
+@media (min-width: 768px) {
+  #root { background: var(--color-background); }
+  .app-wrapper { max-width: 100%; box-shadow: none; overflow: visible; }
 }
 
 h1, h2, h3, h4, h5 { font-family: var(--font-heading); color: var(--color-text-primary); }
@@ -123,51 +138,84 @@ input, select, textarea { font-family: var(--font-body); }
    KEYFRAMES
 ───────────────────────────────────────── */
 @keyframes fadeSlideUp {
-  from { opacity: 0; transform: translateY(18px); }
+  from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
+
 @keyframes shimmer {
-  0%   { background-position: -400px 0; }
-  100% { background-position:  400px 0; }
-}
-@keyframes heartPop {
-  0%   { transform: scale(1);    }
-  40%  { transform: scale(1.35); }
-  70%  { transform: scale(0.9);  }
-  100% { transform: scale(1);    }
-}
-@keyframes float {
-  0%, 100% { transform: translateY(0);    }
-  50%       { transform: translateY(-6px); }
-}
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-@keyframes sunPulse {
-  0%, 100% { transform: scale(1) rotate(0deg); }
-  50%       { transform: scale(1.08) rotate(12deg); }
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
 }
 
-/* ─────────────────────────────────────────
-   SKELETON
-───────────────────────────────────────── */
+@keyframes heartPop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes sunPulse {
+  0%, 100% { transform: scale(1);    opacity: 1; }
+  50%       { transform: scale(1.12); opacity: 0.85; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.9); }
+}
+
+@keyframes dotPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(194, 24, 91, 0.5);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 6px rgba(194, 24, 91, 0);
+  }
+}
+
+@keyframes particleRise {
+  0%   { transform: translateY(0) translateX(0);   opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 0.6; }
+  100% { transform: translateY(-120px) translateX(20px); opacity: 0; }
+}
+
+@keyframes slideInFromLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes gradientFlow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Skeleton shimmer */
 .skeleton {
   background: linear-gradient(
     90deg,
-    var(--color-border)        0%,
-    var(--color-primary-light) 50%,
-    var(--color-border)        100%
+    var(--color-surface-2) 25%,
+    var(--color-border) 50%,
+    var(--color-surface-2) 75%
   );
-  background-size: 400px 100%;
-  animation: shimmer 1.4s ease-in-out infinite;
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
   border-radius: var(--radius-card);
 }
-
-/* ─────────────────────────────────────────
-   SCROLLBAR
-───────────────────────────────────────── */
-::-webkit-scrollbar { width: 0; height: 0; }

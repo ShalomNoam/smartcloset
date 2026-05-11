@@ -1,5 +1,6 @@
 import { Shirt, Footprints, Layers, Gem } from 'lucide-react'
 import HeartButton from '../HeartButton'
+import { STYLE_TAGS_HE, MATCH_SCORES } from '../../data/mockData'
 import styles from './OutfitCard.module.css'
 
 const CATEGORY_ICON = {
@@ -10,19 +11,16 @@ const CATEGORY_ICON = {
   Accessories: Gem,
 }
 
-const STYLE_TAGS  = ['Trending', 'Classic', 'Bold', 'Minimal', 'Chic', 'Street']
-const STYLE_SCORES = [94, 88, 96, 82, 91, 85, 97, 89, 93, 87, 95, 90]
-
 export default function OutfitCard({ outfit, onToggleSave }) {
-  const styleTag   = STYLE_TAGS[(outfit.id - 1) % STYLE_TAGS.length]
-  const matchScore = STYLE_SCORES[(outfit.id - 1) % STYLE_SCORES.length]
+  const styleTag   = STYLE_TAGS_HE[(outfit.id - 1) % STYLE_TAGS_HE.length]
+  const matchScore = MATCH_SCORES[(outfit.id - 1)   % MATCH_SCORES.length]
 
   return (
     <div className={styles.card}>
-      {/* Style score badge */}
+      {/* Match score badge */}
       <div className={styles.scoreBadge}>
         <span className={styles.scoreNum}>{matchScore}%</span>
-        <span className={styles.scoreLabel}>match</span>
+        <span className={styles.scoreLabel}>התאמה</span>
       </div>
 
       {/* Item icons */}

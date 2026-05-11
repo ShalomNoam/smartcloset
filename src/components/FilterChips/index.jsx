@@ -1,6 +1,6 @@
 import styles from './FilterChips.module.css'
 
-export default function FilterChips({ options, active, onSelect }) {
+export default function FilterChips({ options, active, onSelect, labels = {} }) {
   return (
     <div className={styles.row}>
       {options.map((option) => (
@@ -9,7 +9,7 @@ export default function FilterChips({ options, active, onSelect }) {
           onClick={() => onSelect(option)}
           className={`${styles.chip} ${active === option ? styles.active : ''}`}
         >
-          {option}
+          {labels[option] ?? option}
         </button>
       ))}
     </div>

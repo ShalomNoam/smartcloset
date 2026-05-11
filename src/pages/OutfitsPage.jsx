@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Briefcase, Sparkles, Crown, Dumbbell, ChevronLeft } from 'lucide-react'
+import { Briefcase, Sparkles, Crown, Dumbbell } from 'lucide-react'
 import OutfitCard from '../components/OutfitCard'
 import { outfitsByEvent, eventTypes } from '../data/mockData'
 import styles from './OutfitsPage.module.css'
@@ -25,21 +25,24 @@ export default function OutfitsPage() {
 
   return (
     <div className={styles.page}>
+
+      {/* Header */}
       <header className={styles.header}>
-        <button className={styles.backBtn} onClick={() => navigate('/dashboard')}>
-          <ChevronLeft size={18} strokeWidth={2.5} className={styles.backIcon} />
-          Back
-        </button>
-        <h1 className={styles.title}>AI Outfits</h1>
-        <div style={{ width: 60 }} />
+        <h1 className={styles.title}>לוקים</h1>
+        <p className={styles.subtitle}>ה-AI ממליץ לך מהארון שלך</p>
       </header>
 
-      <p className={styles.question}>What's the occasion?</p>
+      {/* Quick button */}
+      <button className={styles.quickBtn} onClick={() => navigate('/dashboard')}>
+        <Sparkles size={13} strokeWidth={2} />
+        מה מתאים לי היום?
+      </button>
 
-      {/* Event 2×2 grid */}
+      {/* Event tabs */}
+      <p className={styles.question}>לאיזה אירוע?</p>
       <div className={styles.eventGrid}>
         {eventTypes.map(({ key, label }) => {
-          const Icon    = EVENT_ICON[key] ?? Sparkles
+          const Icon     = EVENT_ICON[key] ?? Sparkles
           const isActive = activeEvent === key
           return (
             <button
@@ -48,7 +51,7 @@ export default function OutfitsPage() {
               className={`${styles.eventBtn} ${isActive ? styles.eventActive : ''}`}
             >
               <Icon
-                size={26}
+                size={24}
                 strokeWidth={isActive ? 2 : 1.5}
                 className={isActive ? styles.eventIconActive : styles.eventIcon}
               />
@@ -62,8 +65,8 @@ export default function OutfitsPage() {
 
       {/* Suggestions */}
       <div className={styles.suggestHeader}>
-        <h2 className={styles.suggestTitle}>Suggested Outfits</h2>
-        <span className={styles.suggestBadge}>{outfits.length} looks</span>
+        <h2 className={styles.suggestTitle}>לוקים מוצעים</h2>
+        <span className={styles.suggestBadge}>{outfits.length} לוקים</span>
       </div>
 
       <div className={styles.outfitList}>
@@ -83,9 +86,9 @@ export default function OutfitsPage() {
 
       {/* AI note */}
       <div className={styles.aiNote}>
-        <Sparkles size={14} strokeWidth={1.75} className={styles.aiIcon} />
+        <Sparkles size={13} strokeWidth={1.75} className={styles.aiIcon} />
         <p className={styles.aiText}>
-          Outfits are AI-curated from your wardrobe based on the occasion.
+          הלוקים נוצרו ע"י AI מהארון שלך בהתאם לאירוע ומזג האוויר.
         </p>
       </div>
     </div>

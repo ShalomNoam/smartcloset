@@ -1,36 +1,27 @@
 .btn {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
+  background: var(--color-surface-2);
+  border: 1.5px solid var(--color-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-primary-light);
+  cursor: pointer;
   transition: var(--transition);
   flex-shrink: 0;
-  cursor: pointer;
-  border: none;
 }
 
 .btn:hover {
-  transform: scale(1.12);
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  transform: scale(1.1);
 }
 
-.btn:active {
-  transform: scale(0.92);
-}
+.btn:active { transform: scale(0.9); }
 
-/* Icon stroke is always primary pink */
-.heart {
-  color: var(--color-primary);
-  transition: var(--transition);
-}
+.heart { color: var(--color-text-muted); transition: var(--transition); }
 
-/* Filled state: override SVG path fill via CSS (overrides presentation attrs) */
-.saved .heart path {
-  fill: var(--color-primary);
-}
-
-.saved {
-  animation: heartPop 0.35s ease;
-}
+.saved { animation: heartPop 0.35s ease; }
+.saved .heart { color: var(--color-primary); }
+.saved .heart path { fill: var(--color-primary); }

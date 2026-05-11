@@ -1,60 +1,108 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Search, X, Plus, Shirt, Footprints, Layers, Gem } from 'lucide-react'
+import { Search, X, Plus, Shirt, Footprints, Layers, Gem, SlidersHorizontal } from 'lucide-react'
 import ClothingItemCard from '../components/ClothingItemCard'
 import FilterChips      from '../components/FilterChips'
-import { clothingItems, categories } from '../data/mockData'
+import { clothingItems, categories, CATEGORY_LABELS, SEASON_LABELS } from '../data/mockData'
 import styles from './ClosetPage.module.css'
 
 const CATEGORY_ICON = {
   Tops: Shirt, Bottoms: Shirt, Shoes: Footprints, Outer: Layers, Accessories: Gem,
 }
 
+const SORT_OPTIONS = [
+  { value: 'default',  label: 'ברירת מחדל' },
+  { value: 'name-asc', label: 'שם א-ת' },
+  { value: 'name-desc',label: 'שם ת-א' },
+  { value: 'category', label: 'קטגוריה' },
+]
+
+function sortItems(items, sortBy) {
+  const sorted = [...items]
+  if (sortBy === 'name-asc')  return sorted.sort((a, b) => a.name.localeCompare(b.name, 'he'))
+  if (sortBy === 'name-desc') return sorted.sort((a, b) => b.name.localeCompare(a.name, 'he'))
+  if (sortBy === 'category')  return sorted.sort((a, b) => a.category.localeCompare(b.category))
+  return sorted
+}
+
 export default function ClosetPage() {
   const navigate = useNavigate()
   const [activeFilter, setActiveFilter] = useState('All')
-  const [search, setSearch]             = useState('')
-  const [loading, setLoading]           = useState(true)
+  const [search,       setSearch]       = useState('')
+  const [sortBy,       setSortBy]       = useState('default')
+  const [loading,      setLoading]      = useState(true)
   const [selectedItem, setSelectedItem] = useState(null)
 
   useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 1400)
+    const t = setTimeout(() => setLoading(false), 1200)
     return () => clearTimeout(t)
   }, [])
 
-  const filtered = clothingItems.filter((item) => {
-    const matchCat    = activeFilter === 'All' || item.category === activeFilter
-    const matchSearch = item.name.toLowerCase().includes(search.toLowerCase())
-    return matchCat && matchSearch
-  })
+  const filtered = sortItems(
+    clothingItems.filter((item) => {
+      const matchCat    = activeFilter === 'All' || item.category === activeFilter
+      const matchSearch = item.name.toLowerCase().includes(search.toLowerCase())
+      return matchCat && matchSearch
+    }),
+    sortBy
+  )
 
   return (
     <div className={styles.page}>
+
+      {/* Header */}
       <header className={styles.header}>
-        <h1 className={styles.title}>My Closet</h1>
-        <span className={styles.countBadge}>{clothingItems.length} items</span>
+        <div>
+          <h1 className={styles.title}>הארון שלי</h1>
+          <p className={styles.countBadge}>{clothingItems.length} פריטים</p>
+        </div>
+        <button className={styles.addBtn} onClick={() => navigate('/closet/add')}>
+          <Plus size={15} strokeWidth={2.5} />
+          הוסף
+        </button>
       </header>
 
-      {/* Search */}
-      <div className={styles.searchWrap}>
-        <Search size={16} strokeWidth={2} className={styles.searchIcon} />
-        <input
-          type="text"
-          className={styles.search}
-          placeholder="Search your wardrobe..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        {search && (
-          <button className={styles.clearBtn} onClick={() => setSearch('')} aria-label="Clear search">
-            <X size={13} strokeWidth={2.5} />
-          </button>
-        )}
+      {/* Search + Sort row */}
+      <div className={styles.controlsRow}>
+        <div className={styles.searchWrap}>
+          <Search size={15} strokeWidth={2} className={styles.searchIcon} />
+          <input
+            type="text"
+            className={styles.search}
+            placeholder="חפש בארון..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          {search && (
+            <button className={styles.clearBtn} onClick={() => setSearch('')} aria-label="נקה חיפוש">
+              <X size={12} strokeWidth={2.5} />
+            </button>
+          )}
+        </div>
+
+        <div className={styles.sortWrap}>
+          <SlidersHorizontal size={13} strokeWidth={2} className={styles.sortIcon} />
+          <select
+            className={styles.sortSelect}
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            aria-label="מיין לפי"
+          >
+            {SORT_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Filter chips */}
       <div className={styles.filters}>
-        <FilterChips options={categories} active={activeFilter} onSelect={setActiveFilter} />
+        <FilterChips
+          options={categories}
+          active={activeFilter}
+          onSelect={setActiveFilter}
+          labels={CATEGORY_LABELS}
+        />
       </div>
 
       {/* Grid */}
@@ -69,16 +117,16 @@ export default function ClosetPage() {
           <div className={styles.emptyIconWrap}>
             <Shirt size={40} strokeWidth={1} className={styles.emptyIcon} />
           </div>
-          <p className={styles.emptyTitle}>Nothing here yet</p>
+          <p className={styles.emptyTitle}>אין פריטים</p>
           <p className={styles.emptyDesc}>
             {search
-              ? `No results for "${search}"`
-              : 'Add items to your closet to get started'}
+              ? `לא נמצאו תוצאות עבור "${search}"`
+              : 'הוסף פריטים לארון כדי להתחיל'}
           </p>
           {!search && (
             <button className={styles.emptyBtn} onClick={() => navigate('/closet/add')}>
               <Plus size={14} strokeWidth={2.5} />
-              Add your first item
+              הוסף פריט ראשון
             </button>
           )}
         </div>
@@ -90,14 +138,19 @@ export default function ClosetPage() {
               className={styles.cardWrap}
               style={{ animationDelay: `${i * 45}ms` }}
             >
-              <ClothingItemCard item={item} onClick={setSelectedItem} />
+              <ClothingItemCard
+                item={item}
+                onClick={setSelectedItem}
+                onEdit={(it) => console.log('edit', it.id)}
+                onDelete={(it) => console.log('delete', it.id)}
+              />
             </div>
           ))}
 
           {/* Add card */}
           <button className={styles.addCard} onClick={() => navigate('/closet/add')}>
-            <Plus size={24} strokeWidth={1.5} className={styles.addIcon} />
-            <span className={styles.addLabel}>Add Item</span>
+            <Plus size={22} strokeWidth={1.5} className={styles.addCardIcon} />
+            <span className={styles.addCardLabel}>הוסף פריט</span>
           </button>
         </div>
       )}
@@ -109,9 +162,9 @@ export default function ClosetPage() {
             <button
               className={styles.modalClose}
               onClick={() => setSelectedItem(null)}
-              aria-label="Close"
+              aria-label="סגור"
             >
-              <X size={14} strokeWidth={2.5} className={styles.closeIcon} />
+              <X size={14} strokeWidth={2.5} />
             </button>
 
             {(() => {
@@ -127,20 +180,20 @@ export default function ClosetPage() {
 
             <div className={styles.modalMeta}>
               <div className={styles.metaBox}>
-                <span className={styles.metaLabel}>Category</span>
-                <span className={styles.metaValue}>{selectedItem.category}</span>
+                <span className={styles.metaLabel}>קטגוריה</span>
+                <span className={styles.metaValue}>{CATEGORY_LABELS[selectedItem.category] ?? selectedItem.category}</span>
               </div>
               <div className={styles.metaBox}>
-                <span className={styles.metaLabel}>Color</span>
+                <span className={styles.metaLabel}>צבע</span>
                 <span className={styles.metaValue}>{selectedItem.color}</span>
               </div>
             </div>
 
             <div className={styles.modalSeasons}>
-              <span className={styles.metaLabel}>Seasons</span>
+              <span className={styles.metaLabel}>עונות</span>
               <div className={styles.seasonRow}>
-                {selectedItem.season.map((s) => (
-                  <span key={s} className={styles.seasonChip}>{s}</span>
+                {selectedItem.seasons.map((s) => (
+                  <span key={s} className={styles.seasonChip}>{SEASON_LABELS[s] ?? s}</span>
                 ))}
               </div>
             </div>
