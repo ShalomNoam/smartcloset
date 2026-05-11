@@ -108,6 +108,12 @@ body {
   .app-wrapper { max-width: 100%; box-shadow: none; overflow: visible; }
 }
 
+/* Public pages (landing / login / register) — no pill constraint */
+.public-wrapper {
+  width: 100%;
+  min-height: 100vh;
+}
+
 h1, h2, h3, h4, h5 { font-family: var(--font-heading); color: var(--color-text-primary); }
 button { cursor: pointer; border: none; background: none; font-family: var(--font-body); transition: var(--transition); }
 a { text-decoration: none; color: inherit; }

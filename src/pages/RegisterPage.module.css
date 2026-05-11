@@ -1,0 +1,214 @@
+/* ── Page ── */
+.page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #FFF5F9 0%, #F5F0FF 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+  animation: fadeIn 0.35s ease;
+}
+
+/* ── Card ── */
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--color-card);
+  border-radius: 20px;
+  border: 1.5px solid #F0E0F5;
+  box-shadow: 0 8px 32px rgba(255, 107, 157, 0.12);
+  padding: var(--space-2xl) var(--space-xl);
+  animation: fadeSlideUp 0.45s ease both;
+}
+
+/* ── Logo ── */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  text-decoration: none;
+  margin-bottom: var(--space-xl);
+}
+
+.logoIcon {
+  width: 34px; height: 34px;
+  background: var(--color-primary);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.logoText {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+/* ── Headings ── */
+.title {
+  font-family: var(--font-heading);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xl);
+}
+
+/* ── Form ── */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-accent);
+  letter-spacing: 0.2px;
+}
+
+.input {
+  width: 100%;
+  padding: 13px var(--space-md);
+  border: 1.5px solid #E0D0F5;
+  border-radius: var(--radius-input);
+  background: var(--color-card);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  transition: var(--transition);
+  outline: none;
+  font-family: var(--font-body);
+}
+.input::placeholder { color: var(--color-text-secondary); }
+.input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.inputError {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.12);
+}
+
+.errorMsg {
+  font-size: 12px;
+  color: var(--color-error);
+  font-weight: 500;
+}
+
+/* ── Password field ── */
+.pwdWrap { position: relative; }
+.pwdWrap .input { padding-right: 44px; }
+
+.eyeBtn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+  padding: 4px;
+  border-radius: 4px;
+}
+.eyeBtn:hover { color: var(--color-primary); }
+
+/* ── Password strength ── */
+.strengthWrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: 6px;
+}
+
+.strengthBars {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+
+.strengthBar {
+  height: 4px;
+  flex: 1;
+  border-radius: 2px;
+  transition: background 0.3s ease;
+}
+
+.strengthLabel {
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 40px;
+  text-align: right;
+  transition: color 0.3s ease;
+  letter-spacing: 0.2px;
+}
+
+/* ── Submit ── */
+.submitBtn {
+  width: 100%;
+  padding: 14px;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius-button);
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--shadow-btn);
+  margin-top: var(--space-sm);
+  font-family: var(--font-body);
+}
+.submitBtn:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(255, 107, 157, 0.5);
+}
+.submitBtn:active { transform: scale(0.97); }
+
+/* ── Sign-in row ── */
+.signInRow {
+  text-align: center;
+  margin-top: var(--space-xl);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.signInLink {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+}
+.signInLink:hover { text-decoration: underline; }
+
+/* ── Back link ── */
+.backLink {
+  text-align: center;
+  margin-top: var(--space-sm);
+}
+
+.backAnchor {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: var(--transition);
+}
+.backAnchor:hover { color: var(--color-primary); }
