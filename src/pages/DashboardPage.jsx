@@ -66,10 +66,11 @@ export default function DashboardPage() {
     hour < 18 ? 'צהריים טובים' :
                 'ערב טוב'
 
+  const outfitCount = items.length >= 2 ? Math.min(items.length * 2, 12) : 0
   const STATS = [
-    { value: items.length, label: 'פריטים', sub: 'בארון שלך',      barPct: Math.min(100, Math.round(items.length / 20 * 100)), Icon: Shirt    },
-    { value: 12,           label: 'לוקים',  sub: 'נוצרו ע"י AI',  barPct: 85, Icon: Sparkles },
-    { value: 3,            label: 'שמורים', sub: 'לוקים אהובים',  barPct: 30, Icon: Heart    },
+    { value: items.length, label: 'פריטים', sub: 'בארון שלך',     barPct: Math.min(100, Math.round(items.length / 20 * 100)), Icon: Shirt    },
+    { value: outfitCount,  label: 'לוקים',  sub: 'נוצרו ע"י AI', barPct: Math.min(100, Math.round(outfitCount / 12 * 100)),   Icon: Sparkles },
+    { value: 0,            label: 'שמורים', sub: 'לוקים אהובים', barPct: 0,                                                   Icon: Heart    },
   ]
 
   /* ── Full empty state ── */

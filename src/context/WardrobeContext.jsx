@@ -1,35 +1,50 @@
 import { createContext, useContext, useState, useEffect, useRef } from 'react'
-import { clothingItems as defaultItems } from '../data/mockData'
 
 const STORAGE_KEY = 'smartcloset-wardrobe'
+const VERSION_KEY  = 'smartcloset-version'
+const SCHEMA_VER   = '3'   // bump this whenever the default dataset changes
 
 function loadFromStorage() {
   try {
+    const storedVersion = localStorage.getItem(VERSION_KEY)
+
+    if (storedVersion !== SCHEMA_VER) {
+      // Stale or missing version — wipe everything and start fresh
+      localStorage.removeItem(STORAGE_KEY)
+      localStorage.setItem(VERSION_KEY, SCHEMA_VER)
+      return []
+    }
+
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) {
       const parsed = JSON.parse(raw)
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed
+      if (Array.isArray(parsed)) return parsed
     }
   } catch {
-    // corrupted data — fall through to default
+    // Corrupted storage — start fresh
+    try {
+      localStorage.removeItem(STORAGE_KEY)
+      localStorage.setItem(VERSION_KEY, SCHEMA_VER)
+    } catch {}
   }
-  return defaultItems
+  return []
 }
 
 const WardrobeContext = createContext(null)
 
 export function WardrobeProvider({ children }) {
-  // Lazy init: read localStorage on first mount, fall back to mockData
+  // Lazy init: runs once — reads/validates localStorage, returns [] for new/stale users
   const [items, setItems] = useState(loadFromStorage)
   const [toast, setToast]  = useState(null)
   const timerRef = useRef(null)
 
-  // Sync to localStorage whenever items change
+  // Sync to localStorage on every change
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
+      localStorage.setItem(VERSION_KEY, SCHEMA_VER)
     } catch {
-      // storage quota exceeded or private mode — fail silently
+      // Private mode or quota exceeded — fail silently
     }
   }, [items])
 
@@ -57,8 +72,11 @@ export function WardrobeProvider({ children }) {
   }
 
   function resetToDefault() {
-    try { localStorage.removeItem(STORAGE_KEY) } catch {}
-    setItems(defaultItems)
+    try {
+      localStorage.removeItem(STORAGE_KEY)
+      localStorage.setItem(VERSION_KEY, SCHEMA_VER)
+    } catch {}
+    setItems([])
     showToast('הארון אופס לברירת מחדל ✓')
   }
 
