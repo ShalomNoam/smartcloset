@@ -1,16 +1,5 @@
-/* ── Clothing Items (Hebrew) ── */
-export const clothingItems = [
-  { id: 1,  name: 'חולצה לבנה',          category: 'Tops',        color: 'לבן',      seasons: ['Spring','Summer'] },
-  { id: 2,  name: "ג'ינס כחול כהה",       category: 'Bottoms',     color: 'כחול כהה', seasons: ['Spring','Summer','Fall','Winter'] },
-  { id: 3,  name: 'נעלי ספורט לבנות',    category: 'Shoes',       color: 'לבן',      seasons: ['Spring','Summer'] },
-  { id: 4,  name: 'חולצה פרחונית',       category: 'Tops',        color: 'רב צבעי',  seasons: ['Spring','Summer'] },
-  { id: 5,  name: 'בלייזר שחור',         category: 'Outer',       color: 'שחור',     seasons: ['Fall','Winter'] },
-  { id: 6,  name: "ג'ינס כחול",           category: 'Bottoms',     color: 'כחול',     seasons: ['Spring','Summer','Fall','Winter'] },
-  { id: 7,  name: 'צעיף משי',            category: 'Accessories', color: 'רב צבעי',  seasons: ['Fall','Winter'] },
-  { id: 8,  name: 'מגפוני קרסול',        category: 'Shoes',       color: 'שחור',     seasons: ['Fall','Winter'] },
-  { id: 9,  name: 'טישרט פסים',          category: 'Tops',        color: 'כחול-לבן', seasons: ['Spring','Summer'] },
-  { id: 10, name: "מעיל טרנץ'",           category: 'Outer',       color: "בז'",      seasons: ['Fall','Winter','Spring'] },
-]
+/* ── Clothing Items — starts empty; user adds their own ── */
+export const clothingItems = []
 
 /* ── Category keys (English for icon/logic) + Hebrew display labels ── */
 export const categories = ['All', 'Tops', 'Bottoms', 'Shoes', 'Outer', 'Accessories']

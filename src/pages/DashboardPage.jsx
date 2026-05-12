@@ -72,6 +72,38 @@ export default function DashboardPage() {
     { value: 3,            label: 'שמורים', sub: 'לוקים אהובים',  barPct: 30, Icon: Heart    },
   ]
 
+  /* ── Full empty state ── */
+  if (items.length === 0) {
+    return (
+      <div className={styles.page}>
+        <header className={styles.header}>
+          <div className={styles.headerContent}>
+            <div className={styles.greetRow}>
+              <Sun size={16} strokeWidth={2} className={styles.sunIcon} />
+              <span className={styles.greetSub}>{greeting}</span>
+            </div>
+            <h1 className={styles.greetMain}>נועם! ✨</h1>
+          </div>
+          <div className={styles.avatar}>
+            <Shirt size={22} strokeWidth={1.5} className={styles.avatarIcon} />
+          </div>
+        </header>
+        <div className={styles.emptyDash}>
+          <div className={styles.emptyDashIconWrap}>
+            <Shirt size={56} strokeWidth={1} className={styles.emptyDashIcon} />
+          </div>
+          <h2 className={styles.emptyDashTitle}>הארון שלך ריק! 👋</h2>
+          <p className={styles.emptyDashDesc}>
+            כדי לקבל המלצות לוק, צריך קודם להוסיף בגדים לארון שלך
+          </p>
+          <button className={styles.emptyDashBtn} onClick={() => navigate('/closet/add')}>
+            ✦ התחל להוסיף בגדים
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={styles.page}>
 

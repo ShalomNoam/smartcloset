@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Briefcase, Sparkles, Crown, Dumbbell } from 'lucide-react'
+import { Briefcase, Sparkles, Crown, Dumbbell, Shirt } from 'lucide-react'
 import OutfitCard from '../components/OutfitCard'
+import { useWardrobe } from '../context/WardrobeContext'
 import { outfitsByEvent, eventTypes } from '../data/mockData'
 import styles from './OutfitsPage.module.css'
 
@@ -14,6 +15,7 @@ const EVENT_ICON = {
 
 export default function OutfitsPage() {
   const navigate = useNavigate()
+  const { items } = useWardrobe()
   const [activeEvent, setActiveEvent] = useState('Work')
   const [savedMap,    setSavedMap]    = useState({})
 
@@ -21,6 +23,30 @@ export default function OutfitsPage() {
 
   function handleToggleSave(id, val) {
     setSavedMap((prev) => ({ ...prev, [id]: val }))
+  }
+
+  /* ── Empty state ── */
+  if (items.length === 0) {
+    return (
+      <div className={styles.page}>
+        <header className={styles.header}>
+          <h1 className={styles.title}>לוקים</h1>
+          <p className={styles.subtitle}>ה-AI ממליץ לך מהארון שלך</p>
+        </header>
+        <div className={styles.emptyState}>
+          <div className={styles.emptyIconWrap}>
+            <Shirt size={52} strokeWidth={1} className={styles.emptyIcon} />
+          </div>
+          <h2 className={styles.emptyTitle}>אין מספיק בגדים בארון</h2>
+          <p className={styles.emptyDesc}>
+            הוסף לפחות 3 פריטים כדי שה-AI יוכל לבנות לך המלצות לוק מהארון שלך
+          </p>
+          <button className={styles.emptyCta} onClick={() => navigate('/closet/add')}>
+            הוסף בגדים לארון ←
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (
