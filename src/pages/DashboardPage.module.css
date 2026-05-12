@@ -14,6 +14,34 @@
   }
 }
 
+/* ── Nudge card ── */
+.nudgeCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: linear-gradient(135deg, rgba(194,24,91,0.07), rgba(69,39,160,0.07));
+  border: 1.5px solid rgba(194, 24, 91, 0.25);
+  border-radius: var(--radius-card);
+  padding: var(--space-md) var(--space-lg);
+  margin-bottom: var(--space-lg);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.nudgeCard:hover {
+  background: linear-gradient(135deg, rgba(194,24,91,0.12), rgba(69,39,160,0.12));
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.nudgeIcon { color: var(--color-primary); flex-shrink: 0; }
+
+.nudgeText {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
 /* ── Header ── */
 .header {
   display: flex;
@@ -164,7 +192,7 @@
 .lookItems {
   display: flex;
   align-items: stretch;
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-sm);
 }
 
 .lookItem {
@@ -197,7 +225,50 @@
 .itemIcon { color: var(--color-primary); }
 
 .itemName { font-size: 13px; font-weight: 600; color: var(--color-text-primary); }
-.itemCat  { font-size: 11px; color: var(--color-text-secondary); margin-top: 1px; }
+
+/* Owned badge */
+.ownedBadge {
+  background: #E8F5E9;
+  color: #2E7D32;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-chip);
+  white-space: nowrap;
+  display: inline-block;
+  margin-top: 3px;
+}
+
+/* Look built text */
+.lookBuiltText {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-md);
+  font-style: italic;
+}
+
+/* Onboarding nudge */
+.onboardingNudge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  border: none;
+  padding: var(--space-md);
+  border-radius: var(--radius-chip);
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-body);
+  margin-bottom: var(--space-md);
+  width: 100%;
+  text-align: right;
+}
+.onboardingNudge:hover {
+  background: rgba(194, 24, 91, 0.15);
+}
 
 /* Why link */
 .whyLink {
@@ -212,6 +283,7 @@
   transition: var(--transition);
   display: block;
   text-align: start;
+  margin-top: var(--space-sm);
 }
 .whyLink:hover { color: var(--color-primary); text-decoration: underline; }
 

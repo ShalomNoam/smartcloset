@@ -189,7 +189,7 @@
 .addCardIcon  { color: var(--color-primary); }
 .addCardLabel { font-size: 12px; font-weight: 600; color: var(--color-primary); }
 
-/* ── Empty state ── */
+/* ── Empty state (filtered/search) ── */
 .empty {
   display: flex;
   flex-direction: column;
@@ -198,6 +198,19 @@
   padding: var(--space-xl) var(--space-md);
   gap: var(--space-sm);
   animation: fadeIn 0.3s ease;
+}
+
+/* ── Full-screen empty state (no items at all) ── */
+.emptyFull {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-2xl) var(--space-md);
+  gap: var(--space-md);
+  animation: fadeIn 0.3s ease;
+  min-height: 60vh;
+  justify-content: center;
 }
 
 .emptyIconWrap {
@@ -219,7 +232,7 @@
 .emptyDesc {
   font-size: 14px;
   color: var(--color-text-secondary);
-  max-width: 240px;
+  max-width: 280px;
   line-height: 1.5;
 }
 
@@ -243,6 +256,28 @@
 .emptyBtn:hover {
   transform: translateY(-1px);
   box-shadow: 0 8px 24px rgba(194, 24, 91, 0.45);
+}
+
+.emptyBtnLarge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: linear-gradient(135deg, var(--color-primary), #E91E8C);
+  color: #fff;
+  padding: 16px 32px;
+  border-radius: var(--radius-button);
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 6px 24px rgba(194, 24, 91, 0.4);
+  font-family: var(--font-body);
+  letter-spacing: 0.3px;
+}
+.emptyBtnLarge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 32px rgba(194, 24, 91, 0.55);
 }
 
 /* ── Modal overlay ── */
@@ -354,4 +389,245 @@
 @media (min-width: 1280px) {
   .overlay { padding-bottom: 0; align-items: center; }
   .modal { border-radius: var(--radius-card); max-width: 480px; }
+}
+
+/* ── Edit Modal ── */
+.editOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(18, 0, 31, 0.65);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+  padding: var(--space-md);
+}
+
+.editModal {
+  background: var(--color-card);
+  border-radius: 24px;
+  padding: 32px;
+  max-width: 480px;
+  width: 90%;
+  animation: scaleIn 0.25s ease;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.editTitle {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-lg);
+  padding-right: var(--space-xl);
+}
+
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.editField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.editLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-accent);
+  letter-spacing: 0.2px;
+}
+
+.editInput {
+  padding: 12px var(--space-md);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-input);
+  background: var(--color-background);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  outline: none;
+  transition: var(--transition);
+  font-family: var(--font-body);
+  width: 100%;
+}
+.editInput:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.editSelect {
+  padding: 12px var(--space-md);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-input);
+  background: var(--color-background);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  outline: none;
+  transition: var(--transition);
+  font-family: var(--font-body);
+  width: 100%;
+  cursor: pointer;
+  appearance: none;
+}
+.editSelect:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.editSeasonRow {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.editSeasonChip {
+  padding: 7px 14px;
+  border-radius: var(--radius-chip);
+  border: 1.5px solid var(--color-border);
+  background: var(--color-background);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-body);
+}
+.editSeasonChip:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: var(--color-accent-light);
+}
+
+.editSeasonActive {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 3px 10px rgba(194, 24, 91, 0.25);
+}
+.editSeasonActive:hover {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  color: #fff;
+}
+
+.editActions {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: flex-end;
+}
+
+.editCancelBtn {
+  padding: 11px 20px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-button);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-body);
+}
+.editCancelBtn:hover {
+  background: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.editSaveBtn {
+  padding: 11px 20px;
+  background: linear-gradient(135deg, var(--color-primary), #E91E8C);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-button);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 14px rgba(194, 24, 91, 0.3);
+  font-family: var(--font-body);
+}
+.editSaveBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(194, 24, 91, 0.45);
+}
+
+/* ── Delete dialog ── */
+.deleteDialog {
+  background: var(--color-card);
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 360px;
+  width: 90%;
+  animation: scaleIn 0.25s ease;
+  text-align: center;
+}
+
+.deleteTitle {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.deleteDesc {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--space-lg);
+}
+
+.deleteActions {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: center;
+}
+
+.deleteCancelBtn {
+  padding: 11px 20px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-button);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-body);
+  flex: 1;
+}
+.deleteCancelBtn:hover {
+  background: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.deleteConfirmBtn {
+  padding: 11px 20px;
+  background: #C62828;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-button);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 14px rgba(198, 40, 40, 0.3);
+  font-family: var(--font-body);
+  flex: 1;
+}
+.deleteConfirmBtn:hover {
+  background: #B71C1C;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(198, 40, 40, 0.45);
 }

@@ -1,4 +1,5 @@
-import { Shirt, Footprints, Layers, Gem } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { Shirt, Footprints, Layers, Gem, MoreVertical } from 'lucide-react'
 import { CATEGORY_LABELS } from '../../data/mockData'
 import styles from './ClothingItemCard.module.css'
 
@@ -21,6 +22,19 @@ const CATEGORY_TAG_CLASS = {
 export default function ClothingItemCard({ item, onClick, onEdit, onDelete }) {
   const Icon     = CATEGORY_ICON[item.category]  ?? Shirt
   const tagClass = CATEGORY_TAG_CLASS[item.category] ?? 'tagTops'
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef(null)
+
+  useEffect(() => {
+    if (!menuOpen) return
+    function handleOutside(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleOutside)
+    return () => document.removeEventListener('mousedown', handleOutside)
+  }, [menuOpen])
 
   return (
     <div
@@ -38,7 +52,7 @@ export default function ClothingItemCard({ item, onClick, onEdit, onDelete }) {
         {CATEGORY_LABELS[item.category] ?? item.category}
       </span>
 
-      {/* Hover actions overlay */}
+      {/* Desktop hover actions overlay */}
       <div className={styles.actions}>
         <button
           className={styles.actionBtn}
@@ -52,6 +66,33 @@ export default function ClothingItemCard({ item, onClick, onEdit, onDelete }) {
         >
           מחק
         </button>
+      </div>
+
+      {/* Mobile 3-dot menu */}
+      <div ref={menuRef} className={styles.moreWrap}>
+        <button
+          className={styles.moreBtn}
+          onClick={(e) => { e.stopPropagation(); setMenuOpen(v => !v); }}
+          aria-label="אפשרויות"
+        >
+          <MoreVertical size={16} strokeWidth={2} />
+        </button>
+        {menuOpen && (
+          <div className={styles.moreMenu}>
+            <button
+              className={styles.moreItem}
+              onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onEdit?.(item); }}
+            >
+              ✏️ ערוך
+            </button>
+            <button
+              className={`${styles.moreItem} ${styles.moreItemDelete}`}
+              onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onDelete?.(item); }}
+            >
+              🗑️ הסר
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )

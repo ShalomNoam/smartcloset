@@ -3,15 +3,27 @@ import { Shirt, Sparkles, Cloud, Calendar, Camera, Bot, Wand2 } from 'lucide-rea
 import styles from './LandingPage.module.css'
 
 const FEATURES = [
-  { Icon: Wand2,    title: 'המלצות AI אישיות',    desc: 'האלגוריתם לומד את הטעם שלך ומשתפר עם הזמן — כמו סטייליסט אישי שמכיר אותך.' },
-  { Icon: Cloud,    title: 'מותאם למזג האוויר',   desc: 'מחובר לנתוני מזג אוויר בזמן אמת — לא תצא עם סוודר ביום חם לעולם.' },
-  { Icon: Calendar, title: 'לכל אירוע',           desc: 'עבודה, מסיבה, חתונה, ספורט — תמיד הלוק הנכון לרגע הנכון.' },
+  {
+    Icon: Wand2,
+    title: 'מהבגדים שלך בלבד',
+    desc: 'מהבגדים שכבר יש לך — לא קטלוג, לא קניות. ה-AI בונה לוקים מושלמים מהארון הפרטי שלך.',
+  },
+  {
+    Icon: Cloud,
+    title: 'מותאם למזג האוויר',
+    desc: 'ה-AI בוחר מהבגדים שלך בדיוק לפי מזג האוויר — לא תצא עם סוודר ביום חם לעולם.',
+  },
+  {
+    Icon: Calendar,
+    title: 'לכל אירוע',
+    desc: 'לכל אירוע, מהארון שלך — עבודה, מסיבה, חתונה, ספורט. תמיד הלוק הנכון מהבגדים שכבר יש לך.',
+  },
 ]
 
 const STEPS = [
-  { num: '01', Icon: Camera,   title: 'צלם את הארון',    desc: 'צלם כל בגד פעם אחת. ה-AI מזהה אוטומטית צבע, סגנון וקטגוריה.' },
-  { num: '02', Icon: Bot,      title: 'ה-AI לומד אותך',  desc: 'האלגוריתם מנתח את הסגנון שלך, מזג האוויר, והאירועים ביומן.' },
-  { num: '03', Icon: Sparkles, title: 'קבל לוק כל יום',  desc: 'בבוקר מחכה לך לוק מוכן. לחץ רענון לקבל אפשרות אחרת.' },
+  { num: '01', Icon: Camera,   title: 'צלם את הארון',    desc: 'צלם כל בגד פעם אחת. ה-AI מזהה אוטומטית צבע, סגנון וקטגוריה מהבגדים שהעלית.' },
+  { num: '02', Icon: Bot,      title: 'ה-AI לומד אותך',  desc: 'האלגוריתם מנתח את הסגנון שלך, מזג האוויר, והאירועים ביומן — ובונה לוקים מהבגדים שהעלית.' },
+  { num: '03', Icon: Sparkles, title: 'קבל לוק כל יום',  desc: 'בבוקר מחכה לך לוק מוכן מהבגדים שהעלית. לחץ רענון לקבל אפשרות אחרת.' },
 ]
 
 const TESTIMONIALS = [
@@ -57,12 +69,28 @@ export default function LandingPage() {
               <Sparkles size={11} strokeWidth={2} />
               מבוסס בינה מלאכותית
             </div>
-            <h1 className={styles.heroH1}>הארון<br />החכם שלך</h1>
-            <p className={styles.heroSubH2}>הבגדים כבר שם. ה-AI יחליט מה ללבוש.</p>
-            <p className={styles.heroBody}>
-              כל בוקר ה-AI מנתח את מזג האוויר, לוח היום שלך, והסגנון האישי שלך
-              — ובוחר לך לוק מושלם מהארון שלך.
+            <h1 className={styles.heroH1}>הלוקים שלך{'\n'}מחכים בארון</h1>
+            <p className={styles.heroSubH2}>
+              צלם את הבגדים שלך פעם אחת — ה-AI יבנה לך לוקים מושלמים כל יום מהארון הפרטי שלך
             </p>
+
+            {/* Visual flow: wardrobe → AI → outfit */}
+            <div className={styles.flowRow}>
+              <div className={styles.flowBox}>
+                <Shirt size={16} strokeWidth={1.75} className={styles.flowIcon} />
+                <span>הבגדים שלך</span>
+              </div>
+              <span className={styles.flowArrow}>←</span>
+              <div className={`${styles.flowBox} ${styles.flowBoxAi}`}>
+                <Sparkles size={16} strokeWidth={1.75} className={styles.flowIconAi} />
+                <span>✦ AI</span>
+              </div>
+              <span className={styles.flowArrow}>←</span>
+              <div className={styles.flowBox}>
+                <span>לוק מושלם</span>
+              </div>
+            </div>
+
             <div className={styles.heroCtas}>
               <button className={styles.ctaPrimary} onClick={() => navigate('/register')}>✦ התחל בחינם</button>
               <button className={styles.ctaGhost}   onClick={() => navigate('/login')}>צפה בהדגמה</button>
@@ -144,7 +172,7 @@ export default function LandingPage() {
       {/* ── Features ── */}
       <section className={styles.features}>
         <div className={styles.sectionInner}>
-          <p className={styles.lightEyebrow}>למה SmartCloset?</p>
+          <p className={styles.lightEyebrow}>מהבגדים שלך בלבד — לא קטלוג, לא קניות</p>
           <h2 className={styles.lightTitle}>כל מה שהארון שלך צריך</h2>
           <div className={styles.featureGrid}>
             {FEATURES.map(({ Icon, title, desc }) => (

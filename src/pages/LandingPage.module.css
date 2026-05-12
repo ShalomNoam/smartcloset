@@ -102,6 +102,42 @@
   color: rgba(255,255,255,0.78); margin-bottom: var(--space-md); line-height: 1.4;
 }
 
+/* Wardrobe → AI → Outfit flow */
+.flowRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-xl);
+}
+
+.flowBox {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-chip);
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.flowBoxAi {
+  background: rgba(194, 24, 91, 0.2);
+  border-color: rgba(194, 24, 91, 0.5);
+  color: #E91E8C;
+}
+
+.flowIcon { color: rgba(255, 255, 255, 0.7); }
+.flowIconAi { color: #E91E8C; }
+
+.flowArrow {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
 .heroBody {
   font-size: var(--text-base); color: rgba(255,255,255,0.52);
   line-height: 1.8; margin-bottom: var(--space-xl); max-width: 480px;

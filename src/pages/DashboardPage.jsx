@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { RefreshCw, Plus, Shirt, Heart, Footprints, Layers, Gem, Sparkles, Sun, ChevronLeft } from 'lucide-react'
 import WeatherWidget from '../components/WeatherWidget'
-import { dailyLooks, clothingItems } from '../data/mockData'
+import { useWardrobe } from '../context/WardrobeContext'
 import styles from './DashboardPage.module.css'
 
 const CATEGORY_ICON = {
@@ -19,24 +19,43 @@ const WEEK_DAYS = [
   { label: 'ש', full: 'שבת',    hasLook: false },
 ]
 
-const STATS = [
-  { value: clothingItems.length, label: 'פריטים', sub: 'בארון שלך',      barPct: 72, Icon: Shirt    },
-  { value: 12,                   label: 'לוקים',  sub: 'נוצרו ע"י AI',  barPct: 85, Icon: Sparkles },
-  { value: 3,                    label: 'שמורים', sub: 'לוקים אהובים',  barPct: 30, Icon: Heart    },
-]
+// Picks a daily look from actual wardrobe items
+function pickDailyLook(items, seed) {
+  if (!items || items.length === 0) return null
+
+  const tops    = items.filter(i => i.category === 'Tops')
+  const bottoms = items.filter(i => i.category === 'Bottoms')
+  const shoes   = items.filter(i => i.category === 'Shoes')
+
+  const pick = (arr) => arr.length > 0 ? arr[seed % arr.length] : null
+
+  const chosen = [
+    pick(tops),
+    pick(bottoms),
+    pick(shoes),
+  ].filter(Boolean)
+
+  // Fall back: just pick up to 3 items in order
+  if (chosen.length < 2) {
+    return items.slice(0, Math.min(3, items.length))
+  }
+  return chosen
+}
 
 export default function DashboardPage() {
   const navigate = useNavigate()
-  const [lookIdx,    setLookIdx]    = useState(0)
-  const [refreshing, setRefreshing] = useState(false)
-  const [todayDay,   setTodayDay]   = useState(2) // index into WEEK_DAYS (Wednesday = today)
+  const { items } = useWardrobe()
 
-  const look = dailyLooks[lookIdx]
+  const [lookSeed,   setLookSeed]   = useState(0)
+  const [refreshing, setRefreshing] = useState(false)
+  const [todayDay,   setTodayDay]   = useState(2)
+
+  const dailyLookItems = pickDailyLook(items, lookSeed)
 
   function handleRefresh() {
     setRefreshing(true)
     setTimeout(() => {
-      setLookIdx((i) => (i + 1) % dailyLooks.length)
+      setLookSeed(s => s + 1)
       setRefreshing(false)
     }, 380)
   }
@@ -47,8 +66,24 @@ export default function DashboardPage() {
     hour < 18 ? 'צהריים טובים' :
                 'ערב טוב'
 
+  const STATS = [
+    { value: items.length, label: 'פריטים', sub: 'בארון שלך',      barPct: Math.min(100, Math.round(items.length / 20 * 100)), Icon: Shirt    },
+    { value: 12,           label: 'לוקים',  sub: 'נוצרו ע"י AI',  barPct: 85, Icon: Sparkles },
+    { value: 3,            label: 'שמורים', sub: 'לוקים אהובים',  barPct: 30, Icon: Heart    },
+  ]
+
   return (
     <div className={styles.page}>
+
+      {/* ── Add nudge if few items ── */}
+      {items.length < 5 && (
+        <div className={styles.nudgeCard} onClick={() => navigate('/closet/add')} role="button" tabIndex={0}>
+          <Plus size={16} strokeWidth={2.5} className={styles.nudgeIcon} />
+          <span className={styles.nudgeText}>
+            הוסף בגד לארון שלך ← ה-AI יבנה לך לוקים טובים יותר
+          </span>
+        </div>
+      )}
 
       {/* ── Header ── */}
       <header className={styles.header}>
@@ -92,26 +127,48 @@ export default function DashboardPage() {
                 ✦ AI בחר עבורך · התאמה 94%
               </div>
 
-              {/* Items */}
-              <div className={styles.lookItems}>
-                {look.items.map((item, i) => {
-                  const Icon = CATEGORY_ICON[item.category] ?? Shirt
-                  return (
-                    <div key={i} className={styles.lookItem}>
-                      {i > 0 && <div className={styles.itemDivider} />}
-                      <div className={styles.itemInner}>
-                        <div className={styles.itemIconBox}>
-                          <Icon size={24} strokeWidth={1.5} className={styles.itemIcon} />
+              {/* Items from actual wardrobe */}
+              {dailyLookItems && dailyLookItems.length > 0 ? (
+                <>
+                  <div className={styles.lookItems}>
+                    {dailyLookItems.map((item, i) => {
+                      const Icon = CATEGORY_ICON[item.category] ?? Shirt
+                      return (
+                        <div key={item.id ?? i} className={styles.lookItem}>
+                          {i > 0 && <div className={styles.itemDivider} />}
+                          <div className={styles.itemInner}>
+                            <div className={styles.itemIconBox}>
+                              <Icon size={24} strokeWidth={1.5} className={styles.itemIcon} />
+                            </div>
+                            <div>
+                              <p className={styles.itemName}>{item.name}</p>
+                              <span className={styles.ownedBadge}>✓ מהארון שלך</span>
+                            </div>
+                          </div>
                         </div>
-                        <div>
-                          <p className={styles.itemName}>{item.name}</p>
-                          <p className={styles.itemCat}>{look.label}</p>
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
+                      )
+                    })}
+                  </div>
+                  <p className={styles.lookBuiltText}>
+                    הלוק הזה בנוי מ-{dailyLookItems.length} פריטים שיש לך בארון
+                  </p>
+                </>
+              ) : (
+                <div className={styles.onboardingNudge}>
+                  <Sparkles size={16} strokeWidth={1.75} />
+                  <span>הוסף בגדים לארון כדי לקבל לוקים מהארון שלך</span>
+                </div>
+              )}
+
+              {/* Onboarding nudge if less than 3 items */}
+              {dailyLookItems && dailyLookItems.length > 0 && items.length < 3 && (
+                <button
+                  className={styles.onboardingNudge}
+                  onClick={() => navigate('/closet/add')}
+                >
+                  הוסף עוד בגדים לארון כדי לקבל לוקים טובים יותר →
+                </button>
+              )}
 
               <button className={styles.whyLink} onClick={() => navigate('/outfits')}>
                 למה הלוק הזה? ←

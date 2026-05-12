@@ -1,6 +1,6 @@
 import { Shirt, Footprints, Layers, Gem } from 'lucide-react'
 import HeartButton from '../HeartButton'
-import { STYLE_TAGS_HE, MATCH_SCORES } from '../../data/mockData'
+import { STYLE_TAGS_HE, MATCH_SCORES, CATEGORY_LABELS } from '../../data/mockData'
 import styles from './OutfitCard.module.css'
 
 const CATEGORY_ICON = {
@@ -23,13 +23,17 @@ export default function OutfitCard({ outfit, onToggleSave }) {
         <span className={styles.scoreLabel}>התאמה</span>
       </div>
 
-      {/* Item icons */}
-      <div className={styles.icons}>
+      {/* Items list */}
+      <div className={styles.itemsList}>
         {outfit.items.map((item, i) => {
           const Icon = CATEGORY_ICON[item.category] ?? Shirt
           return (
-            <div key={i} className={styles.iconCircle} title={item.name}>
-              <Icon size={20} strokeWidth={1.5} className={styles.icon} />
+            <div key={i} className={styles.itemRow}>
+              <div className={styles.itemIconSm}>
+                <Icon size={16} strokeWidth={1.5} className={styles.icon} />
+              </div>
+              <span className={styles.itemName}>{item.name}</span>
+              <span className={styles.ownedBadge}>✓ בארון שלך</span>
             </div>
           )
         })}

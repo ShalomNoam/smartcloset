@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronLeft, Camera, Palette, Flower2, Sun, Leaf, Snowflake, Sparkles } from 'lucide-react'
+import { ChevronLeft, Camera, Palette, Flower2, Sun, Leaf, Snowflake, Sparkles, Check } from 'lucide-react'
 import { seasons, CATEGORY_LABELS, SEASON_LABELS } from '../data/mockData'
+import { useWardrobe } from '../context/WardrobeContext'
 import styles from './AddItemPage.module.css'
 
 const CATEGORIES_EN = ['Tops', 'Bottoms', 'Shoes', 'Outer', 'Accessories']
@@ -23,6 +24,7 @@ const AI_DETECTIONS = [
 export default function AddItemPage() {
   const navigate = useNavigate()
   const fileRef  = useRef(null)
+  const { items, addItem } = useWardrobe()
 
   const [photo,        setPhoto]        = useState(null)
   const [dragging,     setDragging]     = useState(false)
@@ -33,7 +35,7 @@ export default function AddItemPage() {
   const [selSeasons,   setSelSeasons]   = useState([])
   const [color,        setColor]        = useState('')
   const [errors,       setErrors]       = useState({})
-  const [saved,        setSaved]        = useState(false)
+  const [savedState,   setSavedState]   = useState(false)
 
   function triggerAiDetect() {
     setAiDetecting(true)
@@ -88,8 +90,45 @@ export default function AddItemPage() {
   function handleSave() {
     const e = validate()
     if (Object.keys(e).length) { setErrors(e); return }
-    setSaved(true)
-    setTimeout(() => navigate('/closet'), 900)
+    addItem({ name: name.trim(), category, seasons: selSeasons, color: color.trim() })
+    setSavedState(true)
+  }
+
+  function handleAddAnother() {
+    setPhoto(null)
+    setAiResult(null)
+    setAiDetecting(false)
+    setName('')
+    setCategory('')
+    setSelSeasons([])
+    setColor('')
+    setErrors({})
+    setSavedState(false)
+  }
+
+  // Success screen
+  if (savedState) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.successScreen}>
+          <div className={styles.checkCircle}>
+            <Check size={40} strokeWidth={3} className={styles.checkIcon} />
+          </div>
+          <h2 className={styles.successTitle}>הבגד נוסף לארון שלך! ✓</h2>
+          <p className={styles.successSub}>
+            ה-AI יוכל כעת לשלב אותו בלוקים שלך
+          </p>
+          <div className={styles.successBtns}>
+            <button className={styles.addAnotherBtn} onClick={handleAddAnother}>
+              הוסף עוד בגד
+            </button>
+            <button className={styles.goToClosetBtn} onClick={() => navigate('/closet')}>
+              חזור לארון
+            </button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -103,6 +142,11 @@ export default function AddItemPage() {
         <h1 className={styles.title}>הוסף לארון</h1>
         <div style={{ width: 60 }} />
       </header>
+
+      {/* Live count badge */}
+      <div className={styles.liveCount}>
+        יש לך כרגע <strong>{items.length}</strong> בגדים בארון
+      </div>
 
       {/* Desktop: 2-col layout */}
       <div className={styles.desktopLayout}>
@@ -234,11 +278,10 @@ export default function AddItemPage() {
               ביטול
             </button>
             <button
-              className={`${styles.saveBtn} ${saved ? styles.saveDone : ''}`}
+              className={styles.saveBtn}
               onClick={handleSave}
-              disabled={saved}
             >
-              {saved ? '✓ נשמר!' : '✦ שמור פריט'}
+              ✦ שמור פריט
             </button>
           </div>
         </div>

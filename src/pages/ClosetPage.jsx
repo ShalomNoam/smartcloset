@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search, X, Plus, Shirt, Footprints, Layers, Gem, SlidersHorizontal } from 'lucide-react'
 import ClothingItemCard from '../components/ClothingItemCard'
 import FilterChips      from '../components/FilterChips'
-import { clothingItems, categories, CATEGORY_LABELS, SEASON_LABELS } from '../data/mockData'
+import { useWardrobe }  from '../context/WardrobeContext'
+import { categories, CATEGORY_LABELS, SEASON_LABELS, seasons } from '../data/mockData'
 import styles from './ClosetPage.module.css'
 
 const CATEGORY_ICON = {
@@ -17,6 +18,8 @@ const SORT_OPTIONS = [
   { value: 'category', label: 'קטגוריה' },
 ]
 
+const CATEGORIES_EN = ['Tops', 'Bottoms', 'Shoes', 'Outer', 'Accessories']
+
 function sortItems(items, sortBy) {
   const sorted = [...items]
   if (sortBy === 'name-asc')  return sorted.sort((a, b) => a.name.localeCompare(b.name, 'he'))
@@ -27,25 +30,107 @@ function sortItems(items, sortBy) {
 
 export default function ClosetPage() {
   const navigate = useNavigate()
+  const { items, editItem, deleteItem } = useWardrobe()
+
   const [activeFilter, setActiveFilter] = useState('All')
   const [search,       setSearch]       = useState('')
   const [sortBy,       setSortBy]       = useState('default')
   const [loading,      setLoading]      = useState(true)
   const [selectedItem, setSelectedItem] = useState(null)
 
+  // Edit modal state
+  const [editingItem,   setEditingItem]   = useState(null)
+  const [editName,      setEditName]      = useState('')
+  const [editCategory,  setEditCategory]  = useState('')
+  const [editSeasons,   setEditSeasons]   = useState([])
+  const [editColor,     setEditColor]     = useState('')
+
+  // Delete confirm state
+  const [deletingItem, setDeletingItem] = useState(null)
+
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 1200)
     return () => clearTimeout(t)
   }, [])
 
+  // Close edit modal on Escape
+  useEffect(() => {
+    function onKey(e) {
+      if (e.key === 'Escape') {
+        setEditingItem(null)
+        setDeletingItem(null)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
+
+  function openEdit(item) {
+    setEditingItem(item)
+    setEditName(item.name)
+    setEditCategory(item.category)
+    setEditSeasons([...item.seasons])
+    setEditColor(item.color)
+  }
+
+  function toggleEditSeason(s) {
+    setEditSeasons(prev =>
+      prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]
+    )
+  }
+
+  function handleSaveEdit() {
+    if (!editName.trim() || !editCategory || !editColor.trim() || !editSeasons.length) return
+    editItem(editingItem.id, {
+      name: editName.trim(),
+      category: editCategory,
+      seasons: editSeasons,
+      color: editColor.trim(),
+    })
+    setEditingItem(null)
+  }
+
+  function handleConfirmDelete() {
+    deleteItem(deletingItem.id)
+    setDeletingItem(null)
+    if (selectedItem?.id === deletingItem.id) setSelectedItem(null)
+  }
+
   const filtered = sortItems(
-    clothingItems.filter((item) => {
+    items.filter((item) => {
       const matchCat    = activeFilter === 'All' || item.category === activeFilter
       const matchSearch = item.name.toLowerCase().includes(search.toLowerCase())
       return matchCat && matchSearch
     }),
     sortBy
   )
+
+  // Full-screen empty state when wardrobe is completely empty
+  if (!loading && items.length === 0) {
+    return (
+      <div className={styles.page}>
+        <header className={styles.header}>
+          <div>
+            <h1 className={styles.title}>הארון שלי</h1>
+            <p className={styles.countBadge}>0 פריטים</p>
+          </div>
+        </header>
+        <div className={styles.emptyFull}>
+          <div className={styles.emptyIconWrap}>
+            <Shirt size={56} strokeWidth={1} className={styles.emptyIcon} />
+          </div>
+          <h2 className={styles.emptyTitle}>הארון שלך ריק</h2>
+          <p className={styles.emptyDesc}>
+            הוסף את הבגדים שלך כדי שה-AI יוכל לבנות לוקים מותאמים אישית עבורך
+          </p>
+          <button className={styles.emptyBtnLarge} onClick={() => navigate('/closet/add')}>
+            <Plus size={18} strokeWidth={2.5} />
+            ✦ הוסף את הבגד הראשון שלך
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className={styles.page}>
@@ -54,7 +139,7 @@ export default function ClosetPage() {
       <header className={styles.header}>
         <div>
           <h1 className={styles.title}>הארון שלי</h1>
-          <p className={styles.countBadge}>{clothingItems.length} פריטים</p>
+          <p className={styles.countBadge}>{items.length} פריטים</p>
         </div>
         <button className={styles.addBtn} onClick={() => navigate('/closet/add')}>
           <Plus size={15} strokeWidth={2.5} />
@@ -141,8 +226,8 @@ export default function ClosetPage() {
               <ClothingItemCard
                 item={item}
                 onClick={setSelectedItem}
-                onEdit={(it) => console.log('edit', it.id)}
-                onDelete={(it) => console.log('delete', it.id)}
+                onEdit={(it) => openEdit(it)}
+                onDelete={(it) => setDeletingItem(it)}
               />
             </div>
           ))}
@@ -196,6 +281,107 @@ export default function ClosetPage() {
                   <span key={s} className={styles.seasonChip}>{SEASON_LABELS[s] ?? s}</span>
                 ))}
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit modal */}
+      {editingItem && (
+        <div className={styles.editOverlay} onClick={() => setEditingItem(null)}>
+          <div className={styles.editModal} onClick={(e) => e.stopPropagation()}>
+            <button
+              className={styles.modalClose}
+              onClick={() => setEditingItem(null)}
+              aria-label="סגור"
+            >
+              <X size={14} strokeWidth={2.5} />
+            </button>
+
+            <h2 className={styles.editTitle}>ערוך פריט</h2>
+
+            <div className={styles.editForm}>
+              {/* Name */}
+              <div className={styles.editField}>
+                <label className={styles.editLabel}>שם הפריט</label>
+                <input
+                  type="text"
+                  className={styles.editInput}
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                />
+              </div>
+
+              {/* Category */}
+              <div className={styles.editField}>
+                <label className={styles.editLabel}>קטגוריה</label>
+                <select
+                  className={styles.editSelect}
+                  value={editCategory}
+                  onChange={(e) => setEditCategory(e.target.value)}
+                >
+                  {CATEGORIES_EN.map((c) => (
+                    <option key={c} value={c}>{CATEGORY_LABELS[c] ?? c}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Color */}
+              <div className={styles.editField}>
+                <label className={styles.editLabel}>צבע</label>
+                <input
+                  type="text"
+                  className={styles.editInput}
+                  value={editColor}
+                  onChange={(e) => setEditColor(e.target.value)}
+                />
+              </div>
+
+              {/* Seasons */}
+              <div className={styles.editField}>
+                <label className={styles.editLabel}>עונות</label>
+                <div className={styles.editSeasonRow}>
+                  {seasons.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      className={`${styles.editSeasonChip} ${editSeasons.includes(s) ? styles.editSeasonActive : ''}`}
+                      onClick={() => toggleEditSeason(s)}
+                    >
+                      {SEASON_LABELS[s]}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.editActions}>
+              <button className={styles.editCancelBtn} onClick={() => setEditingItem(null)}>
+                ביטול
+              </button>
+              <button className={styles.editSaveBtn} onClick={handleSaveEdit}>
+                שמור שינויים ✦
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete confirm dialog */}
+      {deletingItem && (
+        <div className={styles.editOverlay} onClick={() => setDeletingItem(null)}>
+          <div className={styles.deleteDialog} onClick={(e) => e.stopPropagation()}>
+            <h2 className={styles.deleteTitle}>הסר פריט</h2>
+            <p className={styles.deleteDesc}>
+              האם אתה בטוח שברצונך להסיר את <strong>{deletingItem.name}</strong> מהארון שלך?
+            </p>
+            <div className={styles.deleteActions}>
+              <button className={styles.deleteCancelBtn} onClick={() => setDeletingItem(null)}>
+                ביטול
+              </button>
+              <button className={styles.deleteConfirmBtn} onClick={handleConfirmDelete}>
+                כן, הסר
+              </button>
             </div>
           </div>
         </div>
