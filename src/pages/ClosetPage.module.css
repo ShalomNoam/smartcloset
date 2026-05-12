@@ -631,3 +631,71 @@
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(198, 40, 40, 0.45);
 }
+
+/* ── Reset zone ── */
+.resetZone {
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-lg);
+  display: flex;
+  justify-content: center;
+}
+
+.resetBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  padding: 6px 10px;
+  border-radius: var(--radius-chip);
+  transition: var(--transition);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.resetBtn:hover { color: var(--color-error); }
+
+.resetConfirmRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.resetConfirmText {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.resetConfirmYes {
+  padding: 6px 14px;
+  background: var(--color-error);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-chip);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: var(--transition);
+}
+.resetConfirmYes:hover { background: #B71C1C; }
+
+.resetConfirmNo {
+  padding: 6px 14px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-chip);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: var(--transition);
+}
+.resetConfirmNo:hover { background: var(--color-border); }

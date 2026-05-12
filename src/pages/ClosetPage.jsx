@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Search, X, Plus, Shirt, Footprints, Layers, Gem, SlidersHorizontal } from 'lucide-react'
+import { Search, X, Plus, Shirt, Footprints, Layers, Gem, SlidersHorizontal, RotateCcw } from 'lucide-react'
 import ClothingItemCard from '../components/ClothingItemCard'
 import FilterChips      from '../components/FilterChips'
 import { useWardrobe }  from '../context/WardrobeContext'
@@ -30,7 +30,8 @@ function sortItems(items, sortBy) {
 
 export default function ClosetPage() {
   const navigate = useNavigate()
-  const { items, editItem, deleteItem } = useWardrobe()
+  const { items, editItem, deleteItem, resetToDefault } = useWardrobe()
+  const [resetConfirm, setResetConfirm] = useState(false)
 
   const [activeFilter, setActiveFilter] = useState('All')
   const [search,       setSearch]       = useState('')
@@ -366,6 +367,29 @@ export default function ClosetPage() {
           </div>
         </div>
       )}
+
+      {/* Reset to default */}
+      <div className={styles.resetZone}>
+        {resetConfirm ? (
+          <div className={styles.resetConfirmRow}>
+            <span className={styles.resetConfirmText}>זה ימחק את כל הבגדים שהוספת. בטוח?</span>
+            <button
+              className={styles.resetConfirmYes}
+              onClick={() => { resetToDefault(); setResetConfirm(false) }}
+            >
+              כן, אפס
+            </button>
+            <button className={styles.resetConfirmNo} onClick={() => setResetConfirm(false)}>
+              ביטול
+            </button>
+          </div>
+        ) : (
+          <button className={styles.resetBtn} onClick={() => setResetConfirm(true)}>
+            <RotateCcw size={12} strokeWidth={2} />
+            איפוס לברירת מחדל
+          </button>
+        )}
+      </div>
 
       {/* Delete confirm dialog */}
       {deletingItem && (
