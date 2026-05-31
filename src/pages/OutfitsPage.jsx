@@ -17,7 +17,7 @@ const EVENT_ICON = {
 
 export default function OutfitsPage() {
   const navigate = useNavigate()
-  const { items } = useWardrobe()
+  const { items, loading: wardrobeLoading } = useWardrobe()
   const { user }  = useAuth()
 
   const [activeEvent, setActiveEvent] = useState('Work')
@@ -72,8 +72,8 @@ export default function OutfitsPage() {
   // Filter fetched outfits to the active event tab
   const visibleOutfits = outfits.filter(o => o.event_type === activeEvent)
 
-  /* ── Empty wardrobe state (shown before even trying to load outfits) ── */
-  if (!loading && items.length === 0) {
+  /* ── Empty wardrobe state — wait for BOTH fetches before deciding ── */
+  if (!loading && !wardrobeLoading && items.length === 0) {
     return (
       <div className={styles.page}>
         <header className={styles.header}>
