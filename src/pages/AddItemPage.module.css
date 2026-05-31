@@ -442,3 +442,26 @@
     width: auto;
   }
 }
+
+/* ── Upload error banner ── */
+.formError {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-error);
+  background: rgba(198, 40, 40, 0.08);
+  border: 1px solid rgba(198, 40, 40, 0.25);
+  border-radius: var(--radius-input);
+  padding: 10px 14px;
+  text-align: center;
+}
+
+/* ── Disabled state for save/cancel during upload ── */
+.saveBtn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none !important;
+}
+.cancelBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

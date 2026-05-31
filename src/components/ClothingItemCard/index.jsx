@@ -38,15 +38,21 @@ export default function ClothingItemCard({ item, onClick, onEdit, onDelete }) {
 
   return (
     <div
-      className={styles.card}
+      className={`${styles.card} ${item.image_url ? styles.hasPhoto : ''}`}
       onClick={() => onClick?.(item)}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => e.key === 'Enter' && onClick?.(item)}
     >
-      <div className={styles.iconWrap}>
-        <Icon size={28} strokeWidth={1.5} className={styles.icon} />
-      </div>
+      {item.image_url ? (
+        <div className={styles.photoWrap}>
+          <img src={item.image_url} alt={item.name} className={styles.photo} />
+        </div>
+      ) : (
+        <div className={styles.iconWrap}>
+          <Icon size={28} strokeWidth={1.5} className={styles.icon} />
+        </div>
+      )}
       <p className={styles.name}>{item.name}</p>
       <span className={`${styles.tag} ${styles[tagClass]}`}>
         {CATEGORY_LABELS[item.category] ?? item.category}

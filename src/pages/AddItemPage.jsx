@@ -3,7 +3,31 @@ import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, Camera, Palette, Flower2, Sun, Leaf, Snowflake, Sparkles, Check } from 'lucide-react'
 import { seasons, CATEGORY_LABELS, SEASON_LABELS } from '../data/mockData'
 import { useWardrobe } from '../context/WardrobeContext'
+import { useAuth }     from '../context/AuthContext'
+import { supabase }    from '../lib/supabase'
 import styles from './AddItemPage.module.css'
+
+const BUCKET = 'clothing-images'
+
+async function uploadToStorage(file, userId) {
+  // Create bucket on first ever upload (no-op if it already exists)
+  await supabase.storage.createBucket(BUCKET, {
+    public: true,
+    fileSizeLimit: 10 * 1024 * 1024, // 10 MB
+  })
+
+  const ext      = file.name.split('.').pop().toLowerCase()
+  const filePath = `${userId}/${Date.now()}.${ext}`
+
+  const { error } = await supabase.storage
+    .from(BUCKET)
+    .upload(filePath, file, { upsert: false })
+
+  if (error) throw error
+
+  const { data } = supabase.storage.from(BUCKET).getPublicUrl(filePath)
+  return data.publicUrl
+}
 
 const CATEGORIES_EN = ['Tops', 'Bottoms', 'Shoes', 'Outer', 'Accessories']
 
@@ -25,8 +49,10 @@ export default function AddItemPage() {
   const navigate = useNavigate()
   const fileRef  = useRef(null)
   const { items, addItem } = useWardrobe()
+  const { user }           = useAuth()
 
-  const [photo,        setPhoto]        = useState(null)
+  const [photo,        setPhoto]        = useState(null)   // object URL for preview
+  const [fileObj,      setFileObj]      = useState(null)   // raw File for upload
   const [dragging,     setDragging]     = useState(false)
   const [aiDetecting,  setAiDetecting]  = useState(false)
   const [aiResult,     setAiResult]     = useState(null)
@@ -35,6 +61,7 @@ export default function AddItemPage() {
   const [selSeasons,   setSelSeasons]   = useState([])
   const [color,        setColor]        = useState('')
   const [errors,       setErrors]       = useState({})
+  const [uploading,    setUploading]    = useState(false)
   const [savedState,   setSavedState]   = useState(false)
 
   function triggerAiDetect() {
@@ -51,6 +78,7 @@ export default function AddItemPage() {
     const file = e.target.files?.[0]
     if (file) {
       setPhoto(URL.createObjectURL(file))
+      setFileObj(file)
       triggerAiDetect()
     }
   }
@@ -64,6 +92,7 @@ export default function AddItemPage() {
     const file = e.dataTransfer.files?.[0]
     if (file && file.type.startsWith('image/')) {
       setPhoto(URL.createObjectURL(file))
+      setFileObj(file)
       triggerAiDetect()
     }
   }
@@ -87,15 +116,31 @@ export default function AddItemPage() {
     return e
   }
 
-  function handleSave() {
+  async function handleSave() {
     const e = validate()
     if (Object.keys(e).length) { setErrors(e); return }
-    addItem({ name: name.trim(), category, seasons: selSeasons, color: color.trim() })
+
+    setUploading(true)
+    let image_url = null
+
+    if (fileObj && user) {
+      try {
+        image_url = await uploadToStorage(fileObj, user.id)
+      } catch (err) {
+        setErrors({ form: 'שגיאה בהעלאת התמונה — נסה שוב' })
+        setUploading(false)
+        return
+      }
+    }
+
+    addItem({ name: name.trim(), category, seasons: selSeasons, color: color.trim(), image_url })
+    setUploading(false)
     setSavedState(true)
   }
 
   function handleAddAnother() {
     setPhoto(null)
+    setFileObj(null)
     setAiResult(null)
     setAiDetecting(false)
     setName('')
@@ -103,6 +148,7 @@ export default function AddItemPage() {
     setSelSeasons([])
     setColor('')
     setErrors({})
+    setUploading(false)
     setSavedState(false)
   }
 
@@ -272,16 +318,22 @@ export default function AddItemPage() {
             </div>
           </div>
 
+          {/* Form-level error (e.g. upload failure) */}
+          {errors.form && (
+            <p className={styles.formError}>{errors.form}</p>
+          )}
+
           {/* Actions */}
           <div className={styles.actions}>
-            <button className={styles.cancelBtn} onClick={() => navigate('/closet')}>
+            <button className={styles.cancelBtn} onClick={() => navigate('/closet')} disabled={uploading}>
               ביטול
             </button>
             <button
               className={styles.saveBtn}
               onClick={handleSave}
+              disabled={uploading}
             >
-              ✦ שמור פריט
+              {uploading ? 'מעלה...' : '✦ שמור פריט'}
             </button>
           </div>
         </div>
