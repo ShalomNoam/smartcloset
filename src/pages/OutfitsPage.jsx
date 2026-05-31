@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Briefcase, Sparkles, Crown, Dumbbell, Shirt } from 'lucide-react'
 import OutfitCard from '../components/OutfitCard'
 import { useWardrobe } from '../context/WardrobeContext'
-import { outfitsByEvent, eventTypes } from '../data/mockData'
+import { useAuth }     from '../context/AuthContext'
+import { supabase }    from '../lib/supabase'
+import { eventTypes }  from '../data/mockData'
 import styles from './OutfitsPage.module.css'
 
 const EVENT_ICON = {
@@ -16,17 +18,49 @@ const EVENT_ICON = {
 export default function OutfitsPage() {
   const navigate = useNavigate()
   const { items } = useWardrobe()
+  const { user }  = useAuth()
+
   const [activeEvent, setActiveEvent] = useState('Work')
   const [savedMap,    setSavedMap]    = useState({})
+  const [outfits,     setOutfits]     = useState([])
+  const [loading,     setLoading]     = useState(true)
+  const [error,       setError]       = useState(null)
 
-  const outfits = outfitsByEvent[activeEvent] ?? []
+  useEffect(() => {
+    if (!user) return
+
+    setLoading(true)
+    setError(null)
+
+    supabase
+      .from('outfits')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .then(({ data, error: fetchError }) => {
+        if (fetchError) {
+          setError(fetchError.message)
+        } else {
+          const fetched = data ?? []
+          setOutfits(fetched)
+          // Seed local saved state from DB values
+          const map = {}
+          fetched.forEach(o => { map[o.id] = o.saved ?? false })
+          setSavedMap(map)
+        }
+        setLoading(false)
+      })
+  }, [user])
 
   function handleToggleSave(id, val) {
-    setSavedMap((prev) => ({ ...prev, [id]: val }))
+    setSavedMap(prev => ({ ...prev, [id]: val }))
   }
 
-  /* ── Empty state ── */
-  if (items.length === 0) {
+  // Filter fetched outfits to the active event tab
+  const visibleOutfits = outfits.filter(o => o.event_type === activeEvent)
+
+  /* ── Empty wardrobe state (shown before even trying to load outfits) ── */
+  if (!loading && items.length === 0) {
     return (
       <div className={styles.page}>
         <header className={styles.header}>
@@ -89,34 +123,67 @@ export default function OutfitsPage() {
         })}
       </div>
 
-      {/* Suggestions */}
+      {/* Suggestions header */}
       <div className={styles.suggestHeader}>
         <h2 className={styles.suggestTitle}>לוקים מוצעים</h2>
-        <span className={styles.suggestBadge}>{outfits.length} לוקים</span>
+        {!loading && !error && (
+          <span className={styles.suggestBadge}>{visibleOutfits.length} לוקים</span>
+        )}
       </div>
 
-      <div className={styles.outfitList}>
-        {outfits.map((outfit, i) => (
-          <div
-            key={outfit.id}
-            className={styles.outfitWrap}
-            style={{ animationDelay: `${i * 80}ms` }}
-          >
-            <OutfitCard
-              outfit={{ ...outfit, saved: savedMap[outfit.id] ?? outfit.saved }}
-              onToggleSave={handleToggleSave}
-            />
+      {/* ── Fetch error ── */}
+      {error && (
+        <div className={styles.errorState}>
+          <p className={styles.errorTitle}>שגיאה בטעינת הלוקים</p>
+          <p className={styles.errorDesc}>{error}</p>
+        </div>
+      )}
+
+      {/* ── Loading skeletons ── */}
+      {!error && loading && (
+        <div className={styles.outfitList}>
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className={`skeleton ${styles.skeletonCard}`} />
+          ))}
+        </div>
+      )}
+
+      {/* ── Outfits list ── */}
+      {!error && !loading && (
+        visibleOutfits.length === 0 ? (
+          <div className={styles.noOutfitsState}>
+            <Sparkles size={32} strokeWidth={1.25} className={styles.noOutfitsIcon} />
+            <p className={styles.noOutfitsText}>אין לוקים לאירוע זה עדיין</p>
           </div>
-        ))}
-      </div>
+        ) : (
+          <div className={styles.outfitList}>
+            {visibleOutfits.map((outfit, i) => (
+              <div
+                key={outfit.id}
+                className={styles.outfitWrap}
+                style={{ animationDelay: `${i * 80}ms` }}
+              >
+                <OutfitCard
+                  outfit={{ ...outfit, saved: savedMap[outfit.id] ?? outfit.saved }}
+                  index={i}
+                  onToggleSave={handleToggleSave}
+                />
+              </div>
+            ))}
+          </div>
+        )
+      )}
 
-      {/* AI note */}
-      <div className={styles.aiNote}>
-        <Sparkles size={13} strokeWidth={1.75} className={styles.aiIcon} />
-        <p className={styles.aiText}>
-          הלוקים נוצרו ע"י AI מהארון שלך בהתאם לאירוע ומזג האוויר.
-        </p>
-      </div>
+      {/* AI note — only shown when there's something to annotate */}
+      {!loading && !error && visibleOutfits.length > 0 && (
+        <div className={styles.aiNote}>
+          <Sparkles size={13} strokeWidth={1.75} className={styles.aiIcon} />
+          <p className={styles.aiText}>
+            הלוקים נוצרו ע"י AI מהארון שלך בהתאם לאירוע ומזג האוויר.
+          </p>
+        </div>
+      )}
+
     </div>
   )
 }

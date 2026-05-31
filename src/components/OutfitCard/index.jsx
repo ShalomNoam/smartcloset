@@ -11,9 +11,9 @@ const CATEGORY_ICON = {
   Accessories: Gem,
 }
 
-export default function OutfitCard({ outfit, onToggleSave }) {
-  const styleTag   = STYLE_TAGS_HE[(outfit.id - 1) % STYLE_TAGS_HE.length]
-  const matchScore = MATCH_SCORES[(outfit.id - 1)   % MATCH_SCORES.length]
+export default function OutfitCard({ outfit, index = 0, onToggleSave }) {
+  const styleTag   = STYLE_TAGS_HE[index % STYLE_TAGS_HE.length]
+  const matchScore = MATCH_SCORES[index % MATCH_SCORES.length]
 
   return (
     <div className={styles.card}>
