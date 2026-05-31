@@ -52,8 +52,21 @@ export default function OutfitsPage() {
       })
   }, [user])
 
-  function handleToggleSave(id, val) {
+  async function handleToggleSave(id, val) {
+    // Optimistic update — feels instant
     setSavedMap(prev => ({ ...prev, [id]: val }))
+
+    const { error } = await supabase
+      .from('outfits')
+      .update({ saved: val })
+      .eq('id', id)
+      .eq('user_id', user.id)
+
+    if (error) {
+      console.error('Failed to persist save toggle:', error)
+      // Revert the optimistic update if the DB write failed
+      setSavedMap(prev => ({ ...prev, [id]: !val }))
+    }
   }
 
   // Filter fetched outfits to the active event tab
