@@ -136,7 +136,8 @@ export default function AddItemPage() {
     try {
       await addItem({ name: name.trim(), category, seasons: selSeasons, color: color.trim(), image_url })
     } catch (err) {
-      setErrors({ form: 'שגיאה בשמירת הפריט — נסה שוב' })
+      console.error('addItem failed:', err)
+      setErrors({ form: err?.message ?? 'שגיאה בשמירת הפריט — נסה שוב' })
       setUploading(false)
       return
     }
