@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search, X, Plus, Shirt, Footprints, Layers, Gem, SlidersHorizontal, RotateCcw } from 'lucide-react'
 import ClothingItemCard from '../components/ClothingItemCard'
@@ -30,13 +30,12 @@ function sortItems(items, sortBy) {
 
 export default function ClosetPage() {
   const navigate = useNavigate()
-  const { items, editItem, deleteItem, resetToDefault } = useWardrobe()
+  const { items, loading, error, editItem, deleteItem, resetToDefault } = useWardrobe()
   const [resetConfirm, setResetConfirm] = useState(false)
 
   const [activeFilter, setActiveFilter] = useState('All')
   const [search,       setSearch]       = useState('')
   const [sortBy,       setSortBy]       = useState('default')
-  const [loading,      setLoading]      = useState(true)
   const [selectedItem, setSelectedItem] = useState(null)
 
   // Edit modal state
@@ -48,11 +47,6 @@ export default function ClosetPage() {
 
   // Delete confirm state
   const [deletingItem, setDeletingItem] = useState(null)
-
-  useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 1200)
-    return () => clearTimeout(t)
-  }, [])
 
   // Close edit modal on Escape
   useEffect(() => {
@@ -107,7 +101,7 @@ export default function ClosetPage() {
   )
 
   // Full-screen empty state when wardrobe is completely empty
-  if (!loading && items.length === 0) {
+  if (!loading && !error && items.length === 0) {
     return (
       <div className={styles.page}>
         <header className={styles.header}>
@@ -191,8 +185,16 @@ export default function ClosetPage() {
         />
       </div>
 
+      {/* Fetch error */}
+      {error && (
+        <div className={styles.errorState}>
+          <p className={styles.errorTitle}>שגיאה בטעינת הארון</p>
+          <p className={styles.errorDesc}>{error}</p>
+        </div>
+      )}
+
       {/* Grid */}
-      {loading ? (
+      {!error && (loading ? (
         <div className={styles.grid}>
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className={`skeleton ${styles.skeletonCard}`} />
@@ -239,7 +241,7 @@ export default function ClosetPage() {
             <span className={styles.addCardLabel}>הוסף פריט</span>
           </button>
         </div>
-      )}
+      ))}
 
       {/* Item detail modal */}
       {selectedItem && (

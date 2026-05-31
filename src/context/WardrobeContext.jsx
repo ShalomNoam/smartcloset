@@ -1,52 +1,42 @@
 import { createContext, useContext, useState, useEffect, useRef } from 'react'
-
-const STORAGE_KEY = 'smartcloset-wardrobe'
-const VERSION_KEY  = 'smartcloset-version'
-const SCHEMA_VER   = '3'   // bump this whenever the default dataset changes
-
-function loadFromStorage() {
-  try {
-    const storedVersion = localStorage.getItem(VERSION_KEY)
-
-    if (storedVersion !== SCHEMA_VER) {
-      // Stale or missing version — wipe everything and start fresh
-      localStorage.removeItem(STORAGE_KEY)
-      localStorage.setItem(VERSION_KEY, SCHEMA_VER)
-      return []
-    }
-
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) {
-      const parsed = JSON.parse(raw)
-      if (Array.isArray(parsed)) return parsed
-    }
-  } catch {
-    // Corrupted storage — start fresh
-    try {
-      localStorage.removeItem(STORAGE_KEY)
-      localStorage.setItem(VERSION_KEY, SCHEMA_VER)
-    } catch {}
-  }
-  return []
-}
+import { supabase } from '../lib/supabase'
+import { useAuth }  from './AuthContext'
 
 const WardrobeContext = createContext(null)
 
 export function WardrobeProvider({ children }) {
-  // Lazy init: runs once — reads/validates localStorage, returns [] for new/stale users
-  const [items, setItems] = useState(loadFromStorage)
-  const [toast, setToast]  = useState(null)
+  const { user }  = useAuth()
+  const [items,   setItems]   = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error,   setError]   = useState(null)
+  const [toast,   setToast]   = useState(null)
   const timerRef = useRef(null)
 
-  // Sync to localStorage on every change
+  // Re-fetch whenever the logged-in user changes (login, logout, page refresh)
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
-      localStorage.setItem(VERSION_KEY, SCHEMA_VER)
-    } catch {
-      // Private mode or quota exceeded — fail silently
+    if (!user) {
+      setItems([])
+      setLoading(false)
+      return
     }
-  }, [items])
+
+    setLoading(true)
+    setError(null)
+
+    supabase
+      .from('clothing_items')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .then(({ data, error: fetchError }) => {
+        if (fetchError) {
+          setError(fetchError.message)
+        } else {
+          setItems(data ?? [])
+        }
+        setLoading(false)
+      })
+  }, [user])
 
   function showToast(message, type = 'success') {
     if (timerRef.current) clearTimeout(timerRef.current)
@@ -54,34 +44,67 @@ export function WardrobeProvider({ children }) {
     timerRef.current = setTimeout(() => setToast(null), 3000)
   }
 
-  function addItem(data) {
-    const newItem = { ...data, id: Date.now() }
-    setItems(prev => [...prev, newItem])
+  async function addItem(data) {
+    const { data: newItem, error: insertError } = await supabase
+      .from('clothing_items')
+      .insert({ ...data, user_id: user.id })
+      .select()
+      .single()
+
+    if (insertError) throw insertError
+
+    // Prepend so it appears first (matches created_at DESC order)
+    setItems(prev => [newItem, ...prev])
     showToast('הפריט נוסף לארון שלך ✓')
     return newItem
   }
 
-  function editItem(id, updates) {
+  async function editItem(id, updates) {
+    const { error: updateError } = await supabase
+      .from('clothing_items')
+      .update(updates)
+      .eq('id', id)
+      .eq('user_id', user.id)
+
+    if (updateError) {
+      showToast('שגיאה בשמירת השינויים', 'error')
+      return
+    }
     setItems(prev => prev.map(item => item.id === id ? { ...item, ...updates } : item))
     showToast('השינויים נשמרו ✓')
   }
 
-  function deleteItem(id) {
+  async function deleteItem(id) {
+    const { error: deleteError } = await supabase
+      .from('clothing_items')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id)
+
+    if (deleteError) {
+      showToast('שגיאה במחיקת הפריט', 'error')
+      return
+    }
     setItems(prev => prev.filter(item => item.id !== id))
     showToast('הפריט הוסר מהארון שלך')
   }
 
-  function resetToDefault() {
-    try {
-      localStorage.removeItem(STORAGE_KEY)
-      localStorage.setItem(VERSION_KEY, SCHEMA_VER)
-    } catch {}
-    setItems([])
+  async function resetToDefault() {
+    const { error: resetError } = await supabase
+      .from('clothing_items')
+      .delete()
+      .eq('user_id', user.id)
+
+    if (!resetError) setItems([])
     showToast('הארון אופס לברירת מחדל ✓')
   }
 
   return (
-    <WardrobeContext.Provider value={{ items, addItem, editItem, deleteItem, resetToDefault, toast }}>
+    <WardrobeContext.Provider value={{
+      items, loading, error,
+      addItem, editItem, deleteItem, resetToDefault,
+      toast,
+    }}>
       {children}
     </WardrobeContext.Provider>
   )

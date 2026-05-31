@@ -133,7 +133,14 @@ export default function AddItemPage() {
       }
     }
 
-    addItem({ name: name.trim(), category, seasons: selSeasons, color: color.trim(), image_url })
+    try {
+      await addItem({ name: name.trim(), category, seasons: selSeasons, color: color.trim(), image_url })
+    } catch (err) {
+      setErrors({ form: 'שגיאה בשמירת הפריט — נסה שוב' })
+      setUploading(false)
+      return
+    }
+
     setUploading(false)
     setSavedState(true)
   }
