@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { RefreshCw, Plus, Shirt, Heart, Footprints, Layers, Gem, Sparkles, Sun, ChevronLeft } from 'lucide-react'
 import WeatherWidget from '../components/WeatherWidget'
 import { useWardrobe } from '../context/WardrobeContext'
+import { useAuth } from '../context/AuthContext'
+import { supabase } from '../lib/supabase'
 import styles from './DashboardPage.module.css'
 
 const CATEGORY_ICON = {
@@ -45,10 +47,30 @@ function pickDailyLook(items, seed) {
 export default function DashboardPage() {
   const navigate = useNavigate()
   const { items } = useWardrobe()
+  const { user }  = useAuth()
 
-  const [lookSeed,   setLookSeed]   = useState(0)
-  const [refreshing, setRefreshing] = useState(false)
-  const [todayDay,   setTodayDay]   = useState(2)
+  const [lookSeed,    setLookSeed]    = useState(0)
+  const [refreshing,  setRefreshing]  = useState(false)
+  const [todayDay,    setTodayDay]    = useState(2)
+  const [profileName, setProfileName] = useState(
+    // Optimistic: use auth metadata while the DB fetch is in flight
+    user?.user_metadata?.full_name ?? ''
+  )
+
+  useEffect(() => {
+    if (!user) return
+    supabase
+      .from('profiles')
+      .select('full_name')
+      .eq('id', user.id)
+      .single()
+      .then(({ data, error }) => {
+        if (!error && data?.full_name) setProfileName(data.full_name)
+      })
+  }, [user])
+
+  // First word of the name for the greeting (e.g. "נועם שלום" → "נועם")
+  const firstName = profileName ? profileName.split(' ')[0] : ''
 
   const dailyLookItems = pickDailyLook(items, lookSeed)
 
@@ -83,7 +105,7 @@ export default function DashboardPage() {
               <Sun size={16} strokeWidth={2} className={styles.sunIcon} />
               <span className={styles.greetSub}>{greeting}</span>
             </div>
-            <h1 className={styles.greetMain}>נועם! ✨</h1>
+            <h1 className={styles.greetMain}>{firstName ? `${firstName}! ✨` : '✨'}</h1>
           </div>
           <div className={styles.avatar}>
             <Shirt size={22} strokeWidth={1.5} className={styles.avatarIcon} />
@@ -125,7 +147,7 @@ export default function DashboardPage() {
             <Sun size={16} strokeWidth={2} className={styles.sunIcon} />
             <span className={styles.greetSub}>{greeting}</span>
           </div>
-          <h1 className={styles.greetMain}>נועם! ✨</h1>
+          <h1 className={styles.greetMain}>{firstName ? `${firstName}! ✨` : '✨'}</h1>
           <p className={styles.greetTagline}>ה-AI בחר לך לוק להיום</p>
         </div>
         <div className={styles.avatar}>
