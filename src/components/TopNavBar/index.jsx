@@ -1,5 +1,6 @@
-import { useLocation, Link } from 'react-router-dom'
-import { Shirt } from 'lucide-react'
+import { useLocation, Link, useNavigate } from 'react-router-dom'
+import { Shirt, LogOut } from 'lucide-react'
+import { supabase } from '../../lib/supabase'
 import styles from './TopNavBar.module.css'
 
 const NAV = [
@@ -11,10 +12,16 @@ const NAV = [
 
 export default function TopNavBar() {
   const { pathname } = useLocation()
+  const navigate     = useNavigate()
 
   function isActive(path) {
     if (path === '/closet') return pathname.startsWith('/closet')
     return pathname === path
+  }
+
+  async function handleSignOut() {
+    await supabase.auth.signOut()
+    navigate('/')
   }
 
   return (
@@ -38,6 +45,11 @@ export default function TopNavBar() {
             </Link>
           ))}
         </nav>
+
+        <button className={styles.signOutBtn} onClick={handleSignOut} title="התנתק">
+          <LogOut size={15} strokeWidth={2} />
+          <span className={styles.signOutLabel}>יציאה</span>
+        </button>
       </div>
     </header>
   )

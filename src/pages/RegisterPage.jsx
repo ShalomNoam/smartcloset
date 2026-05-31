@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { Shirt, Eye, EyeOff, Sparkles } from 'lucide-react'
+import { supabase } from '../lib/supabase'
 import styles from './RegisterPage.module.css'
 
 function getStrength(pwd) {
@@ -25,6 +26,7 @@ export default function RegisterPage() {
   const [showPwd,    setShowPwd]    = useState(false)
   const [showConf,   setShowConf]   = useState(false)
   const [errors,     setErrors]     = useState({})
+  const [submitting, setSubmitting] = useState(false)
 
   const strength = getStrength(password)
 
@@ -43,10 +45,23 @@ export default function RegisterPage() {
     return e
   }
 
-  function handleSubmit(ev) {
+  async function handleSubmit(ev) {
     ev.preventDefault()
     const errs = validate()
     if (Object.keys(errs).length) { setErrors(errs); return }
+
+    setSubmitting(true)
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: fullName } },
+    })
+    setSubmitting(false)
+
+    if (error) {
+      setErrors({ form: error.message })
+      return
+    }
     navigate('/dashboard')
   }
 
@@ -184,8 +199,12 @@ export default function RegisterPage() {
               {errors.confirmPwd && <p className={styles.errorMsg}>{errors.confirmPwd}</p>}
             </div>
 
-            <button type="submit" className={styles.submitBtn}>
-              צור חשבון ✦
+            {errors.form && (
+              <div className={styles.formError}>{errors.form}</div>
+            )}
+
+            <button type="submit" className={styles.submitBtn} disabled={submitting}>
+              {submitting ? 'יוצר חשבון...' : 'צור חשבון ✦'}
             </button>
 
           </form>

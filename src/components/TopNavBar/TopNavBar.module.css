@@ -81,3 +81,28 @@
 
 .active { color: var(--color-primary); font-weight: 600; }
 .active::after { transform: scaleX(1); }
+
+.signOutBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-chip);
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-body);
+  flex-shrink: 0;
+}
+.signOutBtn:hover {
+  color: var(--color-error);
+  border-color: var(--color-error);
+  background: rgba(198, 40, 40, 0.06);
+}
+
+.signOutLabel { display: none; }
+@media (min-width: 1440px) { .signOutLabel { display: inline; } }

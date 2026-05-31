@@ -1,14 +1,16 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { Shirt, Eye, EyeOff, Sparkles } from 'lucide-react'
+import { supabase } from '../lib/supabase'
 import styles from './LoginPage.module.css'
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const [email,    setEmail]    = useState('')
-  const [password, setPassword] = useState('')
-  const [showPwd,  setShowPwd]  = useState(false)
-  const [errors,   setErrors]   = useState({})
+  const [email,       setEmail]       = useState('')
+  const [password,    setPassword]    = useState('')
+  const [showPwd,     setShowPwd]     = useState(false)
+  const [errors,      setErrors]      = useState({})
+  const [submitting,  setSubmitting]  = useState(false)
 
   function validate() {
     const e = {}
@@ -18,10 +20,19 @@ export default function LoginPage() {
     return e
   }
 
-  function handleSignIn(ev) {
+  async function handleSignIn(ev) {
     ev.preventDefault()
     const errs = validate()
     if (Object.keys(errs).length) { setErrors(errs); return }
+
+    setSubmitting(true)
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    setSubmitting(false)
+
+    if (error) {
+      setErrors({ form: 'אימייל או סיסמה שגויים' })
+      return
+    }
     navigate('/dashboard')
   }
 
@@ -107,7 +118,13 @@ export default function LoginPage() {
               {errors.password && <p className={styles.errorMsg}>{errors.password}</p>}
             </div>
 
-            <button type="submit" className={styles.submitBtn}>התחבר ✦</button>
+            {errors.form && (
+              <div className={styles.formError}>{errors.form}</div>
+            )}
+
+            <button type="submit" className={styles.submitBtn} disabled={submitting}>
+              {submitting ? 'מתחבר...' : 'התחבר ✦'}
+            </button>
           </form>
 
           <div className={styles.dividerRow}>
