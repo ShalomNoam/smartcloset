@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Briefcase, Sparkles, Crown, Dumbbell, Shirt } from 'lucide-react'
 import OutfitCard from '../components/OutfitCard'
@@ -13,6 +13,71 @@ const EVENT_ICON = {
   Party:   Sparkles,
   Wedding: Crown,
   Sport:   Dumbbell,
+}
+
+/* ── Outfit generation data ── */
+const EVENT_OUTFIT_NAMES = {
+  Work:    ['לוק משרד מושלם', 'הסטייל של הישיבה', 'מקצועי בלי להשתדל', 'יום בעבודה בסטייל'],
+  Party:   ['לילה בעיר', 'שעת קוקטייל', 'ליל שישי', 'מסיבה בסטייל'],
+  Wedding: ['מסיבת גן', 'אלגנטי קלאסי', 'בוהו שיק', 'אורח בחתונה'],
+  Sport:   ['מוכן לאימון', 'ריצת בוקר', 'יוגה ופילאטיס', 'כושר בסטייל'],
+}
+
+const EVENT_OUTFIT_TAGS = {
+  Work:    [['עסקי','נקי','קלאסי'], ['מקצועי','אלגנטי'], ["קז'ואל",'נוח','יומיומי'], ['סמארט','מדויק']],
+  Party:   [['ליל שישי','סטייל','עירוני'], ['אלגנטי','מסיבה'], ['כיף',"קז'ואל"], ['פינוק','טרנדי']],
+  Wedding: [['אלגנטי','גן'], ['קלאסי','אלגנטי'], ['בוהו','רומנטי'], ['חגיגי','ייחודי']],
+  Sport:   [['ספורטיבי','נוח'], ['ריצה','בוקר'], ['יוגה','מיינדפולנס'], ['כושר','אנרגיה']],
+}
+
+// Which categories to prioritise per event type
+const EVENT_CATEGORY_PRIORITY = {
+  Work:    ['Tops', 'Bottoms', 'Shoes', 'Outer'],
+  Party:   ['Tops', 'Shoes', 'Bottoms', 'Outer', 'Accessories'],
+  Wedding: ['Tops', 'Outer', 'Bottoms', 'Shoes', 'Accessories'],
+  Sport:   ['Tops', 'Bottoms', 'Shoes'],
+}
+
+function generateOutfitsFromItems(items, eventType) {
+  if (!items?.length) return []
+
+  // Group wardrobe items by category
+  const byCategory = {}
+  items.forEach(item => {
+    if (!byCategory[item.category]) byCategory[item.category] = []
+    byCategory[item.category].push(item)
+  })
+
+  const cats  = EVENT_CATEGORY_PRIORITY[eventType] ?? ['Tops', 'Bottoms', 'Shoes']
+  const names = EVENT_OUTFIT_NAMES[eventType]      ?? []
+  const tags  = EVENT_OUTFIT_TAGS[eventType]       ?? []
+  const MAX   = 4
+  const result = []
+
+  for (let i = 0; i < MAX; i++) {
+    const outfitItems = []
+
+    cats.forEach((cat, ci) => {
+      const pool = byCategory[cat]
+      if (!pool?.length) return
+      // Offset per category index so consecutive outfits don't repeat identically
+      outfitItems.push(pool[(i + ci) % pool.length])
+    })
+
+    if (!outfitItems.length) continue
+
+    result.push({
+      id:         `gen-${eventType}-${i}`,
+      event_type: eventType,
+      name:       names[i % names.length] ?? `לוק ${i + 1}`,
+      items:      outfitItems.slice(0, 3).map(it => ({ category: it.category, name: it.name })),
+      tags:       tags[i % tags.length] ?? [],
+      saved:      false,
+      generated:  true,
+    })
+  }
+
+  return result
 }
 
 export default function OutfitsPage() {
@@ -52,25 +117,65 @@ export default function OutfitsPage() {
       })
   }, [user])
 
-  async function handleToggleSave(id, val) {
-    // Optimistic update — feels instant
-    setSavedMap(prev => ({ ...prev, [id]: val }))
+  // Auto-generate outfits from the user's wardrobe items
+  const generatedOutfits = useMemo(
+    () => (!wardrobeLoading && items.length > 0)
+      ? generateOutfitsFromItems(items, activeEvent)
+      : [],
+    [items, activeEvent, wardrobeLoading]
+  )
 
-    const { error } = await supabase
+  // DB outfits filtered to the current event tab
+  const dbOutfitsForEvent = outfits.filter(o => o.event_type === activeEvent)
+
+  // Show DB outfits when available; fall back to generated ones
+  const visibleOutfits = dbOutfitsForEvent.length > 0 ? dbOutfitsForEvent : generatedOutfits
+  const isGenerated    = dbOutfitsForEvent.length === 0 && generatedOutfits.length > 0
+
+  async function handleToggleSave(id, val) {
+    // ── Generated outfit: INSERT into DB on first save ──
+    if (String(id).startsWith('gen-')) {
+      if (!val) return  // was never in DB, nothing to unsave
+      const genOutfit = generatedOutfits.find(o => o.id === id)
+      if (!genOutfit) return
+
+      const { data: newRow, error: insertError } = await supabase
+        .from('outfits')
+        .insert({
+          user_id:    user.id,
+          event_type: genOutfit.event_type,
+          name:       genOutfit.name,
+          items:      genOutfit.items,
+          tags:       genOutfit.tags,
+          saved:      true,
+        })
+        .select()
+        .single()
+
+      if (insertError) {
+        console.error('Failed to save generated outfit:', insertError)
+        return
+      }
+      // Add real DB row to outfits state and savedMap
+      setOutfits(prev => [newRow, ...prev])
+      setSavedMap(prev => ({ ...prev, [newRow.id]: true }))
+      return
+    }
+
+    // ── Existing DB outfit: UPDATE saved flag ──
+    setSavedMap(prev => ({ ...prev, [id]: val }))  // optimistic
+
+    const { error: updateError } = await supabase
       .from('outfits')
       .update({ saved: val })
       .eq('id', id)
       .eq('user_id', user.id)
 
-    if (error) {
-      console.error('Failed to persist save toggle:', error)
-      // Revert the optimistic update if the DB write failed
-      setSavedMap(prev => ({ ...prev, [id]: !val }))
+    if (updateError) {
+      console.error('Failed to persist save toggle:', updateError)
+      setSavedMap(prev => ({ ...prev, [id]: !val }))  // revert
     }
   }
-
-  // Filter fetched outfits to the active event tab
-  const visibleOutfits = outfits.filter(o => o.event_type === activeEvent)
 
   /* ── Empty wardrobe state — wait for BOTH fetches before deciding ── */
   if (!loading && !wardrobeLoading && items.length === 0) {
@@ -153,7 +258,7 @@ export default function OutfitsPage() {
       )}
 
       {/* ── Loading skeletons ── */}
-      {!error && loading && (
+      {!error && (loading || wardrobeLoading) && (
         <div className={styles.outfitList}>
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className={`skeleton ${styles.skeletonCard}`} />
@@ -162,7 +267,7 @@ export default function OutfitsPage() {
       )}
 
       {/* ── Outfits list ── */}
-      {!error && !loading && (
+      {!error && !loading && !wardrobeLoading && (
         visibleOutfits.length === 0 ? (
           <div className={styles.noOutfitsState}>
             <Sparkles size={32} strokeWidth={1.25} className={styles.noOutfitsIcon} />
@@ -188,11 +293,13 @@ export default function OutfitsPage() {
       )}
 
       {/* AI note — only shown when there's something to annotate */}
-      {!loading && !error && visibleOutfits.length > 0 && (
+      {!loading && !wardrobeLoading && !error && visibleOutfits.length > 0 && (
         <div className={styles.aiNote}>
           <Sparkles size={13} strokeWidth={1.75} className={styles.aiIcon} />
           <p className={styles.aiText}>
-            הלוקים נוצרו ע"י AI מהארון שלך בהתאם לאירוע ומזג האוויר.
+            {isGenerated
+              ? 'הלוקים נוצרו אוטומטית מהבגדים שבארון שלך. לחץ על הלב כדי לשמור לוק!'
+              : 'הלוקים נוצרו ע"י AI מהארון שלך בהתאם לאירוע ומזג האוויר.'}
           </p>
         </div>
       )}

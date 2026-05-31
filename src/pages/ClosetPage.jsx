@@ -64,7 +64,7 @@ export default function ClosetPage() {
     setEditingItem(item)
     setEditName(item.name)
     setEditCategory(item.category)
-    setEditSeasons([...(item.seasons ?? [])])
+    setEditSeasons(Array.isArray(item.seasons) ? [...item.seasons] : [])
     setEditColor(item.color)
   }
 
@@ -280,7 +280,7 @@ export default function ClosetPage() {
             <div className={styles.modalSeasons}>
               <span className={styles.metaLabel}>עונות</span>
               <div className={styles.seasonRow}>
-                {(selectedItem.seasons ?? []).map((s) => (
+                {(Array.isArray(selectedItem.seasons) ? selectedItem.seasons : []).map((s) => (
                   <span key={s} className={styles.seasonChip}>{SEASON_LABELS[s] ?? s}</span>
                 ))}
               </div>
