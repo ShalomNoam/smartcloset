@@ -1,6 +1,12 @@
 import { createContext, useContext, useState, useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth }  from './AuthContext'
+import {
+  createClothingItem,
+  fetchUserClothingItems,
+  updateClothingItem,
+  deleteClothingItem,
+} from '../lib/wardrobeService'
 
 const WardrobeContext = createContext(null)
 
@@ -23,19 +29,10 @@ export function WardrobeProvider({ children }) {
     setLoading(true)
     setError(null)
 
-    supabase
-      .from('clothing_items')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-      .then(({ data, error: fetchError }) => {
-        if (fetchError) {
-          setError(fetchError.message)
-        } else {
-          setItems(data ?? [])
-        }
-        setLoading(false)
-      })
+    fetchUserClothingItems(supabase, user.id)
+      .then(data => setItems(data))
+      .catch(err  => setError(err.message))
+      .finally(() => setLoading(false))
   }, [user])
 
   function showToast(message, type = 'success') {
@@ -45,48 +42,30 @@ export function WardrobeProvider({ children }) {
   }
 
   async function addItem(data) {
-    const { data: newItem, error: insertError } = await supabase
-      .from('clothing_items')
-      .insert({ ...data, user_id: user.id })
-      .select()
-      .single()
-
-    if (insertError) throw insertError
-
-    // Prepend so it appears first (matches created_at DESC order)
+    const newItem = await createClothingItem(supabase, user.id, data)
     setItems(prev => [newItem, ...prev])
     showToast('הפריט נוסף לארון שלך ✓')
     return newItem
   }
 
   async function editItem(id, updates) {
-    const { error: updateError } = await supabase
-      .from('clothing_items')
-      .update(updates)
-      .eq('id', id)
-      .eq('user_id', user.id)
-
-    if (updateError) {
+    try {
+      await updateClothingItem(supabase, user.id, id, updates)
+      setItems(prev => prev.map(item => item.id === id ? { ...item, ...updates } : item))
+      showToast('השינויים נשמרו ✓')
+    } catch {
       showToast('שגיאה בשמירת השינויים', 'error')
-      return
     }
-    setItems(prev => prev.map(item => item.id === id ? { ...item, ...updates } : item))
-    showToast('השינויים נשמרו ✓')
   }
 
   async function deleteItem(id) {
-    const { error: deleteError } = await supabase
-      .from('clothing_items')
-      .delete()
-      .eq('id', id)
-      .eq('user_id', user.id)
-
-    if (deleteError) {
+    try {
+      await deleteClothingItem(supabase, user.id, id)
+      setItems(prev => prev.filter(item => item.id !== id))
+      showToast('הפריט הוסר מהארון שלך')
+    } catch {
       showToast('שגיאה במחיקת הפריט', 'error')
-      return
     }
-    setItems(prev => prev.filter(item => item.id !== id))
-    showToast('הפריט הוסר מהארון שלך')
   }
 
   async function resetToDefault() {
