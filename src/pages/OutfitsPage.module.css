@@ -105,6 +105,65 @@
 .eventLabel       { font-size: 13px; font-weight: 600; color: var(--color-text-primary); transition: var(--transition); }
 .eventLabelActive { font-size: 13px; font-weight: 700; color: #fff;                     transition: var(--transition); }
 
+/* ── AI generate button ── */
+.aiGenerateBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-button);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-body);
+  margin-bottom: var(--space-lg);
+  box-shadow: 0 4px 16px rgba(194, 24, 91, 0.35);
+  letter-spacing: 0.2px;
+}
+.aiGenerateBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(194, 24, 91, 0.5);
+}
+.aiGenerateBtn:active:not(:disabled) { transform: scale(0.98); }
+.aiGenerateBtn:disabled { opacity: 0.75; cursor: not-allowed; }
+
+/* ── AI error banner ── */
+.aiErrorBanner {
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  border-radius: var(--radius-card);
+  padding: var(--space-md);
+  color: var(--color-error);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: var(--space-md);
+}
+
+/* ── AI source badge ── */
+.aiBadge {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-accent);
+  background: var(--color-accent-light);
+  padding: 3px 10px;
+  border-radius: var(--radius-chip);
+  letter-spacing: 0.3px;
+  border: 1px solid rgba(69, 39, 160, 0.15);
+}
+
+.suggestRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
 /* ── Suggestions header ── */
 .suggestHeader {
   display: flex;

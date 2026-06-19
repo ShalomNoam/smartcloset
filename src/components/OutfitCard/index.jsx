@@ -50,6 +50,9 @@ export default function OutfitCard({ outfit, index = 0, onToggleSave }) {
             <span key={tag} className={styles.tag}>{tag}</span>
           ))}
         </div>
+        {outfit.explanation && (
+          <p className={styles.explanation}>{outfit.explanation}</p>
+        )}
       </div>
 
       <HeartButton initialSaved={outfit.saved} onToggle={(v) => onToggleSave?.(outfit.id, v)} />

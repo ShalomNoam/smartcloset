@@ -1,9 +1,9 @@
-
 # SmartCloset
 
 🔗 [Live App](https://smartcloset-beta.vercel.app) | [GitHub](https://github.com/ShalomNoam/smartcloset)
 
 ---
+
 ## What is SmartCloset?
 
 SmartCloset is an app that helps you put together great outfits from the clothes already in your wardrobe.
@@ -37,11 +37,24 @@ Busy people who want to look good without spending time on it — especially tho
 
 ## Key Features
 
--  Upload clothing items with photos
--  AI-powered outfit recommendations
--  Save your favorite outfits
--  Filter by occasion (work, party, wedding, sport)
--  Personal account — each user sees only their own wardrobe
+- Upload clothing items with photos
+- AI-powered outfit recommendations (Claude AI via Supabase Edge Function)
+- Save your favorite outfits
+- Filter by occasion (work, party, wedding, sport)
+- Personal account — each user sees only their own wardrobe
+
+---
+
+## Screenshots
+
+![Home](screenshots/home.png)
+![Closet](screenshots/closet.png)
+![Outfits](screenshots/outfits.png)
+
+<img width="636" height="311" alt="Screenshot at Jun 19 23-54-41" src="https://github.com/user-attachments/assets/0b8b657f-3d83-4a08-a4a6-910e975c334d" />
+<img width="637" height="314" alt="Screenshot at Jun 19 23-54-33" src="https://github.com/user-attachments/assets/90d7226d-4c8b-49d4-99e6-4eae06ef552e" />
+<img width="547" height="731" alt="Screenshot at Jun 19 23-54-24" src="https://github.com/user-attachments/assets/22253869-cbff-4cd1-a779-563890fcf332" />
+<img width="638" height="297" alt="Screenshot at Jun 19 23-54-12" src="https://github.com/user-attachments/assets/782e20ba-c88e-4ff7-ae36-95ac7bcb30b4" />
 
 ---
 
@@ -49,16 +62,16 @@ Busy people who want to look good without spending time on it — especially tho
 
 | Layer | Technology |
 |-------|------------|
-| Frontend | React + Vite |
+| Frontend | React 18 + Vite |
+| Routing | React Router v6 |
 | Backend | Supabase (PostgreSQL) |
 | Auth | Supabase Auth |
 | Storage | Supabase Storage |
+| AI | Claude (claude-haiku-4-5) via Edge Function |
+| Tests | Vitest + @vitest/ui |
 | Deploy | Vercel |
 
-<img width="636" height="311" alt="Screenshot at Jun 19 23-54-41" src="https://github.com/user-attachments/assets/0b8b657f-3d83-4a08-a4a6-910e975c334d" />
-<img width="637" height="314" alt="Screenshot at Jun 19 23-54-33" src="https://github.com/user-attachments/assets/90d7226d-4c8b-49d4-99e6-4eae06ef552e" />
-<img width="547" height="731" alt="Screenshot at Jun 19 23-54-24" src="https://github.com/user-attachments/assets/22253869-cbff-4cd1-a779-563890fcf332" />
-<img width="638" height="297" alt="Screenshot at Jun 19 23-54-12" src="https://github.com/user-attachments/assets/782e20ba-c88e-4ff7-ae36-95ac7bcb30b4" />
+---
 
 ## External Services & Integrations
 
@@ -67,6 +80,7 @@ Busy people who want to look good without spending time on it — especially tho
 | Supabase Auth | Authentication | User sign-up, login and logout |
 | Supabase Database | Database | Storing clothing items and outfits |
 | Supabase Storage | File storage | Uploading clothing item images |
+| Supabase Edge Functions | Serverless | Secure Claude AI calls (key never in frontend) |
 | Vercel | Deployment | Hosting the frontend |
 | Claude AI (Anthropic) | API | Generating smart outfit recommendations |
 
@@ -83,7 +97,9 @@ Database tables:
 - **saved_outfits** — User's saved outfits
 
 > Full ERD available in Supabase Dashboard → Database → Schema Visualizer
+
 <img width="350" height="653" alt="Screenshot at Jun 20 00-03-49" src="https://github.com/user-attachments/assets/d00beac5-0454-4689-b98a-3f27709646ac" />
+
 ---
 
 ## How to Run Locally
@@ -102,6 +118,15 @@ VITE_SUPABASE_ANON_KEY=your_anon_key
 
 ```bash
 npm run dev
+```
+
+---
+
+## Tests
+
+```bash
+npm test          # run once (24 tests)
+npm run test:ui   # open Vitest browser UI
 ```
 
 ---
