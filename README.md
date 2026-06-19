@@ -2,6 +2,13 @@
 
 🔗 [Live App](https://smartcloset-beta.vercel.app) | [GitHub](https://github.com/ShalomNoam/smartcloset)
 
+
+---
+## Demo Account
+A demo user with clothes already in the wardrobe so you can explore the app immediately.
+
+Email: noam1234@gmail.com
+Password: 12345678
 ---
 
 ## What is SmartCloset?
