@@ -1,3 +1,4 @@
+<img width="350" height="653" alt="Screenshot at Jun 20 00-03-49" src="https://github.com/user-attachments/assets/d00beac5-0454-4689-b98a-3f27709646ac" />
 # SmartCloset
 
 🔗 [Live App](https://smartcloset-beta.vercel.app) | [GitHub](https://github.com/ShalomNoam/smartcloset)
