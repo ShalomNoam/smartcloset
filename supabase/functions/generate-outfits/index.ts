@@ -35,10 +35,12 @@ serve(async (req) => {
     )
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     if (authError || !user) throw new Error('Unauthorized')
+    console.log('[generate-outfits] auth ok, user:', user.id)
 
     // ── Parse request ─────────────────────────────────────────────────────
     const { items, event_type }: { items: ClothingItem[]; event_type: string } = await req.json()
     if (!items?.length) throw new Error('No items provided')
+    console.log('[generate-outfits] items:', items.length, 'event:', event_type)
 
     const itemsList = items
       .map(it => `- ${it.name} (${it.category}, צבע: ${it.color})`)
@@ -67,6 +69,7 @@ ${itemsList}
 
     // ── Call Claude ───────────────────────────────────────────────────────
     const apiKey = Deno.env.get('ANTHROPIC_API_KEY')
+    console.log('[generate-outfits] API key present:', !!apiKey)
     if (!apiKey) throw new Error('ANTHROPIC_API_KEY secret not set')
 
     const claudeRes = await fetch('https://api.anthropic.com/v1/messages', {
@@ -106,8 +109,10 @@ ${itemsList}
     })
 
   } catch (err) {
-    const status = err.message === 'Unauthorized' ? 401 : 500
-    return new Response(JSON.stringify({ error: err.message }), {
+    const message = err instanceof Error ? err.message : String(err)
+    console.error('[generate-outfits] error:', message)
+    const status = message === 'Unauthorized' ? 401 : 500
+    return new Response(JSON.stringify({ error: message }), {
       status,
       headers: { ...CORS, 'Content-Type': 'application/json' },
     })
