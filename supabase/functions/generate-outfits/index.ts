@@ -72,6 +72,7 @@ ${itemsList}
     console.log('[generate-outfits] API key present:', !!apiKey)
     if (!apiKey) throw new Error('ANTHROPIC_API_KEY secret not set')
 
+    console.log('[generate-outfits] calling Anthropic...')
     const claudeRes = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -86,12 +87,15 @@ ${itemsList}
       }),
     })
 
+    console.log('[generate-outfits] Anthropic status:', claudeRes.status)
     if (!claudeRes.ok) {
       const text = await claudeRes.text()
+      console.error('[generate-outfits] Anthropic error body:', text)
       throw new Error(`Anthropic API error ${claudeRes.status}: ${text}`)
     }
 
     const claude = await claudeRes.json()
+    console.log('[generate-outfits] content blocks:', claude.content?.length)
     const raw    = claude.content[0].text
 
     // Parse JSON — Claude may occasionally wrap it in markdown fences
